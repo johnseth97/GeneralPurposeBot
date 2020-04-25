@@ -1,80 +1,99 @@
 ﻿using System;
+using Discord;
+using Discord.Net;
+using Discord.Commands;
+using Discord.WebSocket;
 using System.Threading.Tasks;
-using DSharpPlus;
-using System.IO;
-using jsonCreate;
-using Newtonsoft.Json;
-using Json;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
+using Microsoft.Extensions.DependencyInjection;
+using CommandHelper.Services;
+using Commands.Modules;
+using CutieDetection.Service;
 
-namespace DiscordBot
+namespace MyBot
 {
-    class Program
+    public class Program
     {
 
-        DiscordClient discord;
+        // build the configuration and assign to _config
+        private readonly IConfiguration _config;
+        private DiscordSocketClient _client;
 
-        static void Main(string[] args) => new Program().MainAsync(args).GetAwaiter().GetResult();
+        public static void Main(string[] args)
+            => new Program().MainAsync().GetAwaiter().GetResult();
 
-        public async Task MainAsync(string[] args)
+        public Program()
         {
 
-        //Generating JSON config
-            DefaultJSON dfalt = new DefaultJSON();
-            string JSONresult = JsonConvert.SerializeObject(dfalt);
-            string path = @"config.json";
-
-        //Checking to see if JSON exists
-            if (File.Exists(path))
-            {
-                Console.WriteLine("CFG File Exists, Continuing");
-            }
-            else if (!File.Exists(path))
-            {
-                using (var tw = new StreamWriter(path, true))
-                {
-                    Console.WriteLine("Generating Defualt Config");
-                    tw.WriteLine(JSONresult.ToString());
-                    tw.Close();
-                }
-            }
-
-        //Authorizing the bot with token from config.json
-            var botToken = Config.FromJson(File.ReadAllText("config.json"));
-
-            discord = new DiscordClient(new DiscordConfiguration
-            {
-
-                Token = botToken.Token,
-                TokenType = TokenType.Bot
-
-            });
-
-        //Sends new messages to the bot
-            discord.MessageCreated += async e =>
-            {
-            //writes everything the bot receives to console
-                Console.Write(e.Message.Timestamp);
-                Console.Write(" ");
-                Console.Write(e.Message.Author.Username);
-                Console.Write(" ");
-                Console.Write(e.Message.Channel);
-                Console.Write(": ");
-                Console.WriteLine(e.Message.Content);
-
-            //Checks message author so bot doesn't respond to itself
-                if (e.Message.Author.IsBot) return;
-
-                if (e.Message.Content.ToLower().EndsWith("no u"))
-                    await e.Message.RespondAsync("no u");
-
-                if (e.Message.Content.ToLower().Contains("not cute"))
-                    await e.Message.RespondAsync("yes you are");
-
-            };
-
-            await discord.ConnectAsync();
-            await Task.Delay(-1);
+            string path = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            // create the configuration
+            var _builder = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile(path: "config.json");
+            //build the configuration
+            _config = _builder.Build();
 
         }
+
+        public async Task MainAsync()
+        {
+            // call ConfigureServices to create the ServiceCollection/Provider for passing around the services
+            using (var services = ConfigureServices())
+            {
+                // get the client and assign to client
+                // you get the services via GetRequiredService<T>
+                var client = services.GetRequiredService<DiscordSocketClient>();
+                _client = client;
+
+                // setup logging and the ready event
+                client.Log += LogAsync;
+                client.Ready += ReadyAsync;
+                services.GetRequiredService<CommandService>().Log += LogAsync;
+
+                // this is where we get the Token value from the configuration file, and start the bot
+                await client.LoginAsync(TokenType.Bot, _config["Token"]);
+                await client.StartAsync();
+
+                // we get the CommandHandler class here and call the InitializeAsync method to start things up for the CommandHandler service
+                await services.GetRequiredService<CommandHandler>().InitializeAsync();
+                await services.GetRequiredService<CuteDetection>().InitializeAsync();
+
+
+                await Task.Delay(-1);
+            }
+        }
+        private Task LogAsync(LogMessage log)
+        {
+            Console.WriteLine(log.ToString());
+            return Task.CompletedTask;
+        }
+
+        private Task ReadyAsync()
+        {
+            Console.WriteLine($"Connected as -> [{_client.CurrentUser}] :)");
+            return Task.CompletedTask;
+        }
+
+
+        private Task Log(LogMessage msg)
+        {
+            Console.WriteLine(msg.ToString());
+            return Task.CompletedTask;
+        }
+
+        // this method handles the ServiceCollection creation/configuration, and builds out the service provider we can call on later
+        private ServiceProvider ConfigureServices()
+        {
+            // this returns a ServiceProvider that is used later to call for those services
+            // we can add types we have access to here, hence adding the new using statement:
+            // using csharpi.Services;
+            // the config we build is also added, which comes in handy for setting the command prefix!
+            return new ServiceCollection()
+                .AddSingleton(_config)
+                .AddSingleton<DiscordSocketClient>()
+                .AddSingleton<CommandService>()
+                .AddSingleton<CommandHandler>()
+                .BuildServiceProvider();
+        }
+
     }
 }
