@@ -92,6 +92,7 @@ namespace MyBot
                 .AddSingleton<DiscordSocketClient>()
                 .AddSingleton<CommandService>()
                 .AddSingleton<CommandHandler>()
+                .AddSingleton<CuteDetection>()
                 .BuildServiceProvider();
         }
 
