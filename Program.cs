@@ -1,15 +1,12 @@
-﻿using System;
-using Discord;
-using Discord.Net;
+﻿using CommandHelper.Services;
+using CutieDetection.Service;
 using Discord.Commands;
 using Discord.WebSocket;
-using System.Threading.Tasks;
+using Discord;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
-using CommandHelper.Services;
-using Commands.Modules;
-using CutieDetection.Service;
+using System.Threading.Tasks;
+using System;
 
 namespace MyBot
 {

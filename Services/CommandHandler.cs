@@ -1,11 +1,11 @@
-using System;
-using System.Reflection;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Discord;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using System.Threading.Tasks;
+using System;
 
 namespace CommandHelper.Services
 {

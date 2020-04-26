@@ -1,14 +1,11 @@
-using Discord;
-using Discord.Net;
-using Discord.WebSocket;
 using Discord.Commands;
-using System;
-using System.Linq;
+using Discord;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
-
+using System;
+using DiceRoll;
+using Discord.WebSocket;
 namespace Commands.Modules
 {
     // for commands to be available, and have the Context passed to them, we must inherit ModuleBase
@@ -31,9 +28,30 @@ namespace Commands.Modules
             await ReplyAsync(sb.ToString());
         }
 
+        //Dice Roller
+        public string Name => "Dice";
+        public List<string> Commands => new List<string> { "dice", "d", "roll", "r", "d100", "d20", "d12", "d10", "d8", "d6", "d4" };
+        [Command("dice")]
+        public async Task Dice(string command, string message, SocketMessage m)
+        {
+            // initialize empty string builder for reply
+            var sb = new StringBuilder();
+
+            // get user info from the Context
+            var user = Context.User;
+
+            DiceRoller genie = new DiceRoller();
+
+            // build out the reply
+            sb.AppendLine($"You are -> [{user.Username}]");
+            sb.AppendLine("I must now say, World!");
+
+            // send simple string reply
+            await ReplyAsync(sb.ToString());
+        }
+
         [Command("8ball")]
         [Alias("ask")]
-        [RequireUserPermission(GuildPermission.KickMembers)]
         public async Task AskEightBall([Remainder]string args = null)
         {
             // I like using StringBuilder to build out the reply
