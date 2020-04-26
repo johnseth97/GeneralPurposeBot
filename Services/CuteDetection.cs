@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System;
 
 
-namespace CutieDetection.Service
+namespace GeneralPurposeBot.Services
 {
     public class CuteDetection
     {

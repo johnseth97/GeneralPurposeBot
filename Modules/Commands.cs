@@ -1,12 +1,15 @@
-using Discord.Commands;
 using Discord;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System;
-using DiceRoll;
+using Discord.Commands;
 using Discord.WebSocket;
-namespace Commands.Modules
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace GeneralPurposeBot.Modules
 {
     // for commands to be available, and have the Context passed to them, we must inherit ModuleBase
     public class ExampleCommands : ModuleBase
@@ -29,25 +32,21 @@ namespace Commands.Modules
         }
 
         //Dice Roller
-        public string Name => "Dice";
-        public List<string> Commands => new List<string> { "dice", "d", "roll", "r", "d100", "d20", "d12", "d10", "d8", "d6", "d4" };
-        [Command("dice")]
-        public async Task Dice(string command, string message, SocketMessage m)
+        [Command("dice"), Summary("Rolls dice")]
+        public async Task DiceRoll()
         {
-            // initialize empty string builder for reply
-            var sb = new StringBuilder();
+            var random = new Random();
+            var number = random.Next(1, 7);
+            await Context.Channel.SendMessageAsync("Your 6 sided 🎲 rolled a " + number + "!").ConfigureAwait(false);
+        }
 
-            // get user info from the Context
-            var user = Context.User;
-
-            DiceRoller genie = new DiceRoller();
-
-            // build out the reply
-            sb.AppendLine($"You are -> [{user.Username}]");
-            sb.AppendLine("I must now say, World!");
-
-            // send simple string reply
-            await ReplyAsync(sb.ToString());
+        //Who Bottoms
+        [Command("Who Bottoms?"), Summary("Decides The Bottom")]
+        public async Task WhoBottoms()
+        {
+            var random = new Random();
+            var number = random.Next(1, 7);
+            await Context.Channel.SendMessageAsync("Your 6 sided 🎲 rolled a " + number + "!").ConfigureAwait(false);
         }
 
         [Command("8ball")]

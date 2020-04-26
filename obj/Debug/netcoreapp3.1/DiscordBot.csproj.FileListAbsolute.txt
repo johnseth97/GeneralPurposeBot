@@ -52,3 +52,4 @@ C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcor
 C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\System.Runtime.CompilerServices.Unsafe.dll
 C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\System.Text.Encodings.Web.dll
 C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\System.Text.Json.dll
+C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\MathParser.org-mXparser.dll

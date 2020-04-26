@@ -1,5 +1,4 @@
-﻿using CommandHelper.Services;
-using CutieDetection.Service;
+﻿using GeneralPurposeBot.Services;
 using Discord.Commands;
 using Discord.WebSocket;
 using Discord;
@@ -8,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using System;
 
-namespace MyBot
+namespace GeneralPurposeBot
 {
     public class Program
     {
