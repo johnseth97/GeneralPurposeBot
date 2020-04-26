@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "+WFIMrDZKgfzUTOqyywUiHWMRdlNHRV/iEJCHqPs+sQNMnx1yljZUJJFnWlf1HUqZ3aExNH8a7a4pSbh77/oaw==",
+  "dgSpecHash": "oABVgd8vz6u9wp1RrzaYV2Zt3JaSbhSPPjLfRZTiWuZHtdUjiHdBV3lSYnhS/X+Wzqeea8NDX5TT1mqluLVWZQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\ethan\\Documents\\VS Code\\Discord Bots\\GeneralPurposeBot\\DiscordBot.csproj",
   "expectedPackageFiles": [
@@ -13,6 +13,7 @@
     "C:\\Users\\ethan\\.nuget\\packages\\dsharpplus\\3.2.3\\dsharpplus.3.2.3.nupkg.sha512",
     "C:\\Users\\ethan\\.nuget\\packages\\dsharpplus.interactivity\\3.2.3\\dsharpplus.interactivity.3.2.3.nupkg.sha512",
     "C:\\Users\\ethan\\.nuget\\packages\\json.net\\1.0.18\\json.net.1.0.18.nupkg.sha512",
+    "C:\\Users\\ethan\\.nuget\\packages\\mathparser.org-mxparser\\4.4.2\\mathparser.org-mxparser.4.4.2.nupkg.sha512",
     "C:\\Users\\ethan\\.nuget\\packages\\microsoft.extensions.configuration\\5.0.0-preview.3.20215.2\\microsoft.extensions.configuration.5.0.0-preview.3.20215.2.nupkg.sha512",
     "C:\\Users\\ethan\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\5.0.0-preview.3.20215.2\\microsoft.extensions.configuration.abstractions.5.0.0-preview.3.20215.2.nupkg.sha512",
     "C:\\Users\\ethan\\.nuget\\packages\\microsoft.extensions.configuration.fileextensions\\5.0.0-preview.3.20215.2\\microsoft.extensions.configuration.fileextensions.5.0.0-preview.3.20215.2.nupkg.sha512",

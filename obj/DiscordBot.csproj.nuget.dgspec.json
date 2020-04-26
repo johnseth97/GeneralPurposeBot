@@ -56,6 +56,10 @@
               "target": "Package",
               "version": "[1.0.18, )"
             },
+            "MathParser.org-mXparser": {
+              "target": "Package",
+              "version": "[4.4.2, )"
+            },
             "Microsoft.Extensions.Configuration": {
               "target": "Package",
               "version": "[5.0.0-preview.3.20215.2, )"

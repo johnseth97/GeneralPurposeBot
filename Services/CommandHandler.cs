@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System;
 
-namespace CommandHelper.Services
+namespace GeneralPurposeBot.Services
 {
     public class CommandHandler
     {
