@@ -1,55 +1,86 @@
-C:\Users\ethan\DiscordBot\bin\Debug\netcoreapp3.1\DiscordBot.exe
-C:\Users\ethan\DiscordBot\bin\Debug\netcoreapp3.1\DiscordBot.deps.json
-C:\Users\ethan\DiscordBot\bin\Debug\netcoreapp3.1\DiscordBot.runtimeconfig.json
-C:\Users\ethan\DiscordBot\bin\Debug\netcoreapp3.1\DiscordBot.runtimeconfig.dev.json
-C:\Users\ethan\DiscordBot\bin\Debug\netcoreapp3.1\DiscordBot.dll
-C:\Users\ethan\DiscordBot\bin\Debug\netcoreapp3.1\DiscordBot.pdb
-C:\Users\ethan\DiscordBot\obj\Debug\netcoreapp3.1\DiscordBot.csprojAssemblyReference.cache
-C:\Users\ethan\DiscordBot\obj\Debug\netcoreapp3.1\DiscordBot.csproj.CoreCompileInputs.cache
-C:\Users\ethan\DiscordBot\obj\Debug\netcoreapp3.1\DiscordBot.AssemblyInfoInputs.cache
-C:\Users\ethan\DiscordBot\obj\Debug\netcoreapp3.1\DiscordBot.AssemblyInfo.cs
-C:\Users\ethan\DiscordBot\obj\Debug\netcoreapp3.1\DiscordBot.dll
-C:\Users\ethan\DiscordBot\obj\Debug\netcoreapp3.1\DiscordBot.pdb
-C:\Users\ethan\DiscordBot\obj\Debug\netcoreapp3.1\DiscordBot.genruntimeconfig.cache
-C:\Users\ethan\DiscordBot\bin\Debug\netcoreapp3.1\DSharpPlus.dll
-C:\Users\ethan\DiscordBot\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
-C:\Users\ethan\DiscordBot\obj\Debug\netcoreapp3.1\DiscordBot.csproj.CopyComplete
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\DiscordBot.exe
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\DiscordBot.deps.json
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\DiscordBot.runtimeconfig.json
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\DiscordBot.runtimeconfig.dev.json
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\DiscordBot.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\DiscordBot.pdb
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\DSharpPlus.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\obj\Debug\netcoreapp3.1\DiscordBot.csprojAssemblyReference.cache
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\obj\Debug\netcoreapp3.1\DiscordBot.csproj.CoreCompileInputs.cache
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\obj\Debug\netcoreapp3.1\DiscordBot.AssemblyInfoInputs.cache
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\obj\Debug\netcoreapp3.1\DiscordBot.AssemblyInfo.cs
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\obj\Debug\netcoreapp3.1\DiscordBot.csproj.CopyComplete
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\obj\Debug\netcoreapp3.1\DiscordBot.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\obj\Debug\netcoreapp3.1\DiscordBot.pdb
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\obj\Debug\netcoreapp3.1\DiscordBot.genruntimeconfig.cache
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Json.Net.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Discord.Net.Commands.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Discord.Net.Core.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Discord.Net.Rest.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Discord.Net.Webhook.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Discord.Net.WebSocket.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\DSharpPlus.Interactivity.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\System.Interactive.Async.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\System.Linq.Async.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Abstractions.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.FileExtensions.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Json.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.Abstractions.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileProviders.Abstractions.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileProviders.Physical.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileSystemGlobbing.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Primitives.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\System.Runtime.CompilerServices.Unsafe.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\System.Text.Encodings.Web.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\System.Text.Json.dll
-C:\Users\ethan\Documents\VS Code\Discord Bots\GeneralPurposeBot\bin\Debug\netcoreapp3.1\MathParser.org-mXparser.dll
+C:/Users/ethan/DiscordBot/bin/Debug/netcoreapp3.1/DiscordBot.exe
+C:/Users/ethan/DiscordBot/bin/Debug/netcoreapp3.1/DiscordBot.deps.json
+C:/Users/ethan/DiscordBot/bin/Debug/netcoreapp3.1/DiscordBot.runtimeconfig.json
+C:/Users/ethan/DiscordBot/bin/Debug/netcoreapp3.1/DiscordBot.runtimeconfig.dev.json
+C:/Users/ethan/DiscordBot/bin/Debug/netcoreapp3.1/DiscordBot.dll
+C:/Users/ethan/DiscordBot/bin/Debug/netcoreapp3.1/DiscordBot.pdb
+C:/Users/ethan/DiscordBot/obj/Debug/netcoreapp3.1/DiscordBot.csprojAssemblyReference.cache
+C:/Users/ethan/DiscordBot/obj/Debug/netcoreapp3.1/DiscordBot.csproj.CoreCompileInputs.cache
+C:/Users/ethan/DiscordBot/obj/Debug/netcoreapp3.1/DiscordBot.AssemblyInfoInputs.cache
+C:/Users/ethan/DiscordBot/obj/Debug/netcoreapp3.1/DiscordBot.AssemblyInfo.cs
+C:/Users/ethan/DiscordBot/obj/Debug/netcoreapp3.1/DiscordBot.dll
+C:/Users/ethan/DiscordBot/obj/Debug/netcoreapp3.1/DiscordBot.pdb
+C:/Users/ethan/DiscordBot/obj/Debug/netcoreapp3.1/DiscordBot.genruntimeconfig.cache
+C:/Users/ethan/DiscordBot/bin/Debug/netcoreapp3.1/DSharpPlus.dll
+C:/Users/ethan/DiscordBot/bin/Debug/netcoreapp3.1/Newtonsoft.Json.dll
+C:/Users/ethan/DiscordBot/obj/Debug/netcoreapp3.1/DiscordBot.csproj.CopyComplete
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/DiscordBot.exe
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/DiscordBot.deps.json
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/DiscordBot.runtimeconfig.json
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/DiscordBot.runtimeconfig.dev.json
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/DiscordBot.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/DiscordBot.pdb
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/DSharpPlus.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Newtonsoft.Json.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/obj/Debug/netcoreapp3.1/DiscordBot.csprojAssemblyReference.cache
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/obj/Debug/netcoreapp3.1/DiscordBot.csproj.CoreCompileInputs.cache
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/obj/Debug/netcoreapp3.1/DiscordBot.AssemblyInfoInputs.cache
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/obj/Debug/netcoreapp3.1/DiscordBot.AssemblyInfo.cs
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/obj/Debug/netcoreapp3.1/DiscordBot.csproj.CopyComplete
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/obj/Debug/netcoreapp3.1/DiscordBot.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/obj/Debug/netcoreapp3.1/DiscordBot.pdb
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/obj/Debug/netcoreapp3.1/DiscordBot.genruntimeconfig.cache
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Json.Net.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Discord.Net.Commands.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Discord.Net.Core.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Discord.Net.Rest.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Discord.Net.Webhook.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Discord.Net.WebSocket.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/DSharpPlus.Interactivity.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/System.Interactive.Async.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/System.Linq.Async.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Configuration.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Configuration.Abstractions.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Configuration.FileExtensions.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Configuration.Json.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.DependencyInjection.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.FileProviders.Abstractions.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.FileProviders.Physical.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.FileSystemGlobbing.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Primitives.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/System.Runtime.CompilerServices.Unsafe.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/System.Text.Encodings.Web.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/System.Text.Json.dll
+C:/Users/ethan/Documents/VS Code/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/MathParser.org-mXparser.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/DiscordBot.deps.json
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/DiscordBot.runtimeconfig.json
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/DiscordBot.runtimeconfig.dev.json
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/DiscordBot.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/DiscordBot.pdb
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Discord.Net.Commands.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Discord.Net.Core.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Discord.Net.Rest.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Discord.Net.Webhook.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Discord.Net.WebSocket.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Configuration.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Configuration.Abstractions.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Configuration.FileExtensions.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Configuration.Json.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.DependencyInjection.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.FileProviders.Abstractions.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.FileProviders.Physical.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.FileSystemGlobbing.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Primitives.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/Newtonsoft.Json.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/System.Interactive.Async.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/bin/Debug/netcoreapp3.1/System.Linq.Async.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/obj/Debug/netcoreapp3.1/DiscordBot.csprojAssemblyReference.cache
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/obj/Debug/netcoreapp3.1/DiscordBot.csproj.CoreCompileInputs.cache
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/obj/Debug/netcoreapp3.1/DiscordBot.AssemblyInfoInputs.cache
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/obj/Debug/netcoreapp3.1/DiscordBot.AssemblyInfo.cs
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/obj/Debug/netcoreapp3.1/DiscordBot.csproj.CopyComplete
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/obj/Debug/netcoreapp3.1/DiscordBot.dll
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/obj/Debug/netcoreapp3.1/DiscordBot.pdb
+/Users/ethanjohnson/VSCode-Projects/Discord Bots/GeneralPurposeBot/obj/Debug/netcoreapp3.1/DiscordBot.genruntimeconfig.cache
