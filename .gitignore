@@ -1,2 +1,3 @@
 config.json
 obj/Debug/netcoreapp3.1/DiscordBot.assets.cache
+.prettierrc
