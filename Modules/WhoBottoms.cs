@@ -34,7 +34,7 @@ namespace GeneralPurposeBot.Modules
 
             if (number == 1)
             {
-                sb.AppendLine($"{context.Message.Author} Bottoms!");
+                sb.AppendLine($"{Context.Message.Author} Bottoms!");
                 sb.AppendLine();
                 sb.AppendLine($"{args} Tops!");
             }
@@ -42,7 +42,7 @@ namespace GeneralPurposeBot.Modules
             if (number == 2)
             sb.AppendLine($"{args} Bottoms!");
             sb.AppendLine();
-            sb.AppendLine($"{context.Message.Author} Tops!");
+            sb.AppendLine($"{Context.Message.Author} Tops!");
 
             // now we can assign the description of the embed to the contents of the StringBuilder we created
             embed.Description = sb.ToString();
