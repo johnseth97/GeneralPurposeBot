@@ -1,10 +1,10 @@
-using Discord.Commands;
 using Discord;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
+using Discord.Commands;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Text;
+using System.Collections.Generic;
 
 namespace GeneralPurposeBot.Modules
 {
@@ -34,7 +34,7 @@ namespace GeneralPurposeBot.Modules
 
             // we can get lots of information from the Context that is passed into the commands
             // here I'm setting up the preface with the user's name and a comma
-            sb.AppendLine($"{context.Message.Author},");
+            sb.AppendLine($"{Context.Message.Author},");
             sb.AppendLine();
 
             // let's make sure the supplied question isn't null

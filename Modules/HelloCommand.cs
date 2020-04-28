@@ -20,7 +20,7 @@ namespace GeneralPurposeBot.Modules
             var user = Context.User;
 
             // build out the reply
-            sb.AppendLine($"You are -> [{context.Message.Author}]");
+            sb.AppendLine($"You are -> [{Context.Message.Author}]");
             sb.AppendLine("I must now say, World!");
 
             // send simple string reply
