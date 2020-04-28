@@ -10,6 +10,7 @@ namespace GeneralPurposeBot.Modules
 {
     public class WhoBottoms : ModuleBase
     {
+        [RequireNsfw]
         [Command("whobottoms"), Summary("Decides The Bottom")]
         public async Task BottomDecider([Remainder]string args = null)
         {
