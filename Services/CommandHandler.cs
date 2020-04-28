@@ -76,7 +76,7 @@ namespace GeneralPurposeBot.Services
             // if a command isn't found, log that info to console and exit this method
             if (!command.IsSpecified)
             {
-                System.Console.WriteLine($"Command failed to execute for [{context.User.Username}] <-> [{result.ErrorReason}]!");
+                System.Console.WriteLine($"Command failed to execute for [{context.User.Nickname}] <-> [{result.ErrorReason}]!");
                 return;
             }
 
@@ -84,13 +84,13 @@ namespace GeneralPurposeBot.Services
             // log success to the console and exit this method
             if (result.IsSuccess)
             {
-                System.Console.WriteLine($"Command [{command.Value.Name}] executed for -> [{context.User.Username}]");
+                System.Console.WriteLine($"Command [{command.Value.Name}] executed for -> [{context.User.Nickname}]");
                 return;
             }
 
 
             // failure scenario, let's let the user know
-            await context.Channel.SendMessageAsync($"Sorry, {context.User.Username}... something went wrong -> [{result}]!");
+            await context.Channel.SendMessageAsync($"Sorry, {context.User.Nickname}... something went wrong -> [{result}]!");
         }
     }
 }
