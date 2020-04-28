@@ -17,16 +17,12 @@ namespace GeneralPurposeBot
         private DiscordSocketClient _client;
 
         public static void Main(string[] args)
-            => new Program().MainAsync().GetAwaiter().GetResult();
+            => new Program(args).MainAsync().GetAwaiter().GetResult();
 
-        public Program()
+        public Program(string[] args)
         {
-
-            string path = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            // create the configuration
-            var _builder = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile(path: "config.json");
-            //build the configuration
-            _config = _builder.Build();
+             var path = args.Length > 0 ? args[0] : "config.json";
+            _config= new ConfigurationBuilder().AddJsonFile(path).Build();
 
         }
 
