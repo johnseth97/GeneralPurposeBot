@@ -1,22 +1,18 @@
-using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
-using System;
+using Discord;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Threading;
+using System;
 
 namespace GeneralPurposeBot.Modules
 {
-    // for commands to be available, and have the Context passed to them, we must inherit ModuleBase
-    public class ExampleCommands : ModuleBase
+    public class AskEightBall : ModuleBase
     {
         [Command("8ball")]
         [Alias("ask")]
-        public async Task AskEightBall([Remainder]string args = null)
+        public async Task EightBall([Remainder]string args = null)
         {
             // I like using StringBuilder to build out the reply
             var sb = new StringBuilder();
@@ -90,73 +86,5 @@ namespace GeneralPurposeBot.Modules
             // this will reply with the embed
             await ReplyAsync(null, false, embed.Build());
         }
-
-        //Dice Roller
-        [Command("dice"), Summary("Rolls dice")]
-        public async Task DiceRoll()
-        {
-            var random = new Random();
-            var number = random.Next(1, 7);
-            await Context.Channel.SendMessageAsync("Your 6 sided 🎲 rolled a " + number + "!").ConfigureAwait(false);
-        }
-
-        [Command("hello")]
-        public async Task HelloCommand()
-        {
-            // initialize empty string builder for reply
-            var sb = new StringBuilder();
-
-            // get user info from the Context
-            var user = Context.User;
-
-            // build out the reply
-            sb.AppendLine($"You are -> [{user.Username}]");
-            sb.AppendLine("I must now say, World!");
-
-            // send simple string reply
-            await ReplyAsync(sb.ToString());
-        }
-
-        //Who Bottoms
-        [Command("whobottoms"), Summary("Decides The Bottom")]
-        public async Task WhoBottoms([Remainder]string args = null)
-        {
-            // I like using StringBuilder to build out the reply
-            var sb = new StringBuilder();
-            // let's use an embed for this one!
-            var embed = new EmbedBuilder();
-
-            // now to create a list of possible replies
-            var replies = new List<string>();
-
-            // time to add some options to the embed (like color and title)
-            embed.WithColor(new Color(155, 0, 155));
-            embed.Title = "Who Bottoms?";
-            // we can get lots of information from the Context that is passed into the commands
-            // here I'm setting up the preface with the user's name and a comma
-
-            //doing a coinflip
-            var random = new Random();
-            var number = random.Next(1, 3);
-
-            if (number == 1)
-            {
-                sb.AppendLine($"{Context.User.Username} Bottoms!");
-                sb.AppendLine();
-                sb.AppendLine($"{args} Tops!");
-            }
-
-            if (number == 2)
-                sb.AppendLine($"{args} Bottoms!");
-            sb.AppendLine();
-            sb.AppendLine($"{Context.User.Username} Tops!");
-
-            // now we can assign the description of the embed to the contents of the StringBuilder we created
-            embed.Description = sb.ToString();
-
-            // this will reply with the embed
-            await ReplyAsync(null, false, embed.Build());
-        }
-
     }
 }
