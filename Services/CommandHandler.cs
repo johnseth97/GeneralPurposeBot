@@ -87,13 +87,13 @@ namespace GeneralPurposeBot.Services
                 System.Console.WriteLine($"Command [{command.Value.Name}] executed for -> [{context.Message.Author}]");
                 return;
             }
-            else if (result == "UnmetPrecondition: This command may only be invoked in an NSFW channel.")
-            {
-                await context.Channel.SendMessageAsync($"Sorry, {context.Message.Author}, you gotta be in a NSFW channel to use this condition");
-            }
 
-            // failure scenario, let's let the user know
-            await context.Channel.SendMessageAsync($"Sorry, {context.Message.Author}... something went wrong -> [{result}]!");
-        }
+            if(!result.IsSuccess && result.Error != CommandError.UnknownCommand)
+            {
+                System.Console.WriteLine($"[{context.Message.Timestamp}]: The message [{context.Message.Author}] from [{context.Message.Author}] triggered error [{result}]");
+                await context.Channel.SendMessageAsync(result.ErrorReason);
+            }
+         }
     }
 }
+
