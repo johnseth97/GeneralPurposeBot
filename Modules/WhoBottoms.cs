@@ -1,5 +1,6 @@
 using Discord.Commands;
 using Discord;
+using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,16 +12,13 @@ namespace GeneralPurposeBot.Modules
     public class WhoBottoms : ModuleBase
     {
         [RequireNsfw]
-        [Command("whobottoms"), Summary("Decides The Bottom")]
-        public async Task BottomDecider([Remainder]string args = null)
+        [Command("whobottoms"), Summary("Decides The Bottom. Usage: !whobottoms <@otherUser>")]
+        public async Task BottomDecider(SocketUser user)
         {
             // I like using StringBuilder to build out the reply
             var sb = new StringBuilder();
             // let's use an embed for this one!
             var embed = new EmbedBuilder();
-
-            // now to create a list of possible replies
-            var replies = new List<string>();
 
             // time to add some options to the embed (like color and title)
             embed.WithColor(new Color(155, 0, 155));
@@ -34,16 +32,17 @@ namespace GeneralPurposeBot.Modules
 
             if (number == 1)
             {
-                sb.AppendLine($"{Context.Message.Author} Bottoms!");
+                sb.AppendLine($"{Context.Message.Author.Mention} Bottoms! 🍑");
                 sb.AppendLine();
-                sb.AppendLine($"{args} Tops!");
+                sb.AppendLine($"{user.Mention} Tops! 🍆");
             }
 
             if (number == 2)
-            sb.AppendLine($"{args} Bottoms!");
-            sb.AppendLine();
-            sb.AppendLine($"{Context.Message.Author} Tops!");
-
+            {
+                sb.AppendLine($"{user.Mention} Bottoms! 🍑");
+                sb.AppendLine();
+                sb.AppendLine($"{Context.Message.Author.Mention} Tops! 🍆");
+            }
             // now we can assign the description of the embed to the contents of the StringBuilder we created
             embed.Description = sb.ToString();
 
