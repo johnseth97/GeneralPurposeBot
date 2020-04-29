@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using System;
+using System.Net.Http;
 
 namespace GeneralPurposeBot
 {
@@ -85,6 +86,7 @@ namespace GeneralPurposeBot
                 .AddSingleton<CommandService>()
                 .AddSingleton<CommandHandler>()
                 .AddSingleton<CuteDetection>()
+                .AddSingleton<HttpClient>()
                 .BuildServiceProvider();
         }
 
