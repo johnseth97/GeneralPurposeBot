@@ -13,21 +13,22 @@ namespace GeneralPurposeBot.Services
     {
         // setup fields to be set later in the constructor
         private readonly IConfiguration _config;
-        private readonly CommandService _commands;
+        public readonly CommandService Commands;
         private readonly DiscordSocketClient _client;
         private readonly IServiceProvider _services;
+
 
         public CommandHandler(IServiceProvider services)
         {
             // juice up the fields with these services
             // since we passed the services in, we can use GetRequiredService to pass them into the fields set earlier
             _config = services.GetRequiredService<IConfiguration>();
-            _commands = services.GetRequiredService<CommandService>();
+            Commands = services.GetRequiredService<CommandService>();
             _client = services.GetRequiredService<DiscordSocketClient>();
             _services = services;
 
             // take action when we execute a command
-            _commands.CommandExecuted += CommandExecutedAsync;
+            Commands.CommandExecuted += CommandExecutedAsync;
 
             // take action when we receive a message (so we can process it, and see if it is a valid command)
             _client.MessageReceived += MessageReceivedAsync;
@@ -36,7 +37,7 @@ namespace GeneralPurposeBot.Services
         public async Task InitializeAsync()
         {
             // register modules that are public and inherit ModuleBase<T>.
-            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+            await Commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
 
         // this class is where the magic starts, and takes actions upon receiving messages
@@ -68,18 +69,11 @@ namespace GeneralPurposeBot.Services
             var context = new SocketCommandContext(_client, message);
 
             // execute command if one is found that matches
-            await _commands.ExecuteAsync(context, argPos, _services);
+            await Commands.ExecuteAsync(context, argPos, _services);
         }
 
         public async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
-            // if a command isn't found, log that info to console and exit this method
-            if (!command.IsSpecified)
-            {
-                System.Console.WriteLine($"Command failed to execute for [{context.Message.Author}] <-> [{result.ErrorReason}]!");
-                return;
-            }
-
 
             // log success to the console and exit this method
             if (result.IsSuccess)
@@ -88,12 +82,25 @@ namespace GeneralPurposeBot.Services
                 return;
             }
 
-            if(!result.IsSuccess && result.Error != CommandError.UnknownCommand)
+            if (!command.IsSpecified)
             {
-                System.Console.WriteLine($"[{context.Message.Timestamp}]: The message [{context.Message.Author}] from [{context.Message.Author}] triggered error [{result}]");
-                await context.Channel.SendMessageAsync(result.ErrorReason);
+                await context.Channel.SendMessageAsync("Command not found. Type !help for list of commands");
+                return;
             }
-         }
+
+            if (result.Error == CommandError.BadArgCount)
+            {
+                await context.Channel.SendMessageAsync("Too few arguments. Type !help <command name> for arguments!");
+                return;
+            }
+
+            if (!result.IsSuccess && command.IsSpecified)
+            {
+                System.Console.WriteLine($"[{context.Message.Timestamp}]: The message [{context.Message}] from [{context.Message.Author}] triggered error [{result.Error}]");
+                await context.Channel.SendMessageAsync("Congratulations! You broke something!");
+                return;
+            }
+        }
     }
 }
 
