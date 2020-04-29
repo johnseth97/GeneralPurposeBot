@@ -21,8 +21,8 @@ namespace GeneralPurposeBot
 
         public Program(string[] args)
         {
-             var path = args.Length > 0 ? args[0] : "config.json";
-            _config= new ConfigurationBuilder().AddJsonFile(path).Build();
+            var path = args.Length > 0 ? args[0] : "config.json";
+            _config = new ConfigurationBuilder().AddJsonFile(path).Build();
 
         }
 
