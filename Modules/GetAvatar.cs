@@ -11,12 +11,12 @@ namespace GeneralPurposeBot.Modules
 {
     public class GetAvatar : ModuleBase
     {
-        [Command("avatar"), Summary("Displays the user's full profile picture")]
-        public async Task Avatar(SocketUser user = null)
+        [Command("avatar"), Summary("Displays the MentionedUser's full profile picture, or the command initiator's full pfp if no user is mentioned.")]
+        public async Task Avatar(SocketUser MentionedUser = null)
         {
-            if(user != null)
+            if (MentionedUser != null)
             {
-                await ReplyAsync(user.GetAvatarUrl(ImageFormat.Auto, 2048));
+                await ReplyAsync(MentionedUser.GetAvatarUrl(ImageFormat.Auto, 2048));
             }
             else
             {
