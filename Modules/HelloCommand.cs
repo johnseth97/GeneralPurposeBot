@@ -10,7 +10,7 @@ namespace GeneralPurposeBot.Modules
 {
     public class HelloCommand : ModuleBase
     {
-        [Command("hello")]
+        [Command("hello"), Summary("!hello")]
         public async Task Hello()
         {
             // initialize empty string builder for reply
