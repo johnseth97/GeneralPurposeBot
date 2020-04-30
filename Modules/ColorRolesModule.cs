@@ -48,7 +48,7 @@ namespace DiscordBot.Modules
                 return;
             }
 
-            colorStr = ColorTranslator.ToHtml(System.Drawing.Color.FromArgb(color.ToArgb())); // Done to standardize the role name 
+            colorStr = ColorTranslator.ToHtml(System.Drawing.Color.FromArgb(color.ToArgb())); // Done to standardize the role name
             var discordColor = new Discord.Color(color.R, color.G, color.B); // Because Discord.Net has it's own color format, ig
             var roleName = "color-" + colorStr;
             var possibleRoles = Context.Guild.Roles
@@ -60,7 +60,9 @@ namespace DiscordBot.Modules
             }
             else // create if if not
             {
-                role = await Context.Guild.CreateRoleAsync(roleName, GuildPermissions.None, discordColor, false, null).ConfigureAwait(false);
+                role = await Context.Guild.CreateRoleAsync(roleName, GuildPermissions.None, discordColor, false, null);
+                await role.ModifyAsync(r => r.Position = 2).ConfigureAwait(false);
+
             }
 
             // remove any existing color roles from the user
