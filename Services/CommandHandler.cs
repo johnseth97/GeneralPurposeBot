@@ -75,30 +75,42 @@ namespace GeneralPurposeBot.Services
         public async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
 
-            // log success to the console and exit this method
-            if (result.IsSuccess)
+            var resultStr = result.IsSuccess ? "Success" : (result.Error + ": " + result.ErrorReason);
+            System.Console.WriteLine($"Command [{command.Value.Name}] executed for -> [{context.Message.Author}] (Result: {resultStr})");
+            if (!result.IsSuccess)
             {
-                System.Console.WriteLine($"Command [{command.Value.Name}] executed for -> [{context.Message.Author}]");
-                return;
-            }
-
-            if (!command.IsSpecified)
-            {
-                await context.Channel.SendMessageAsync("Command not found. Type !help for list of commands");
-                return;
-            }
-
-            if (result.Error == CommandError.BadArgCount)
-            {
-                await context.Channel.SendMessageAsync("Too few arguments. Type !help <command name> for arguments!");
-                return;
-            }
-
-            if (!result.IsSuccess && command.IsSpecified)
-            {
-                System.Console.WriteLine($"[{context.Message.Timestamp}]: The message [{context.Message}] from [{context.Message.Author}] triggered error [{result.Error}]");
-                await context.Channel.SendMessageAsync("Congratulations! You broke something!");
-                return;
+                // I'm not 100% sure that these are what some of these mean tbh.
+                switch (result.Error)
+                {
+                    case CommandError.UnknownCommand:
+                        await context.Channel.SendMessageAsync("Command not found. Type !help for list of commands").ConfigureAwait(false);
+                        break;
+                    case CommandError.ParseFailed:
+                        await context.Channel.SendMessageAsync($"Could not parse the arguments for this command! {result.ErrorReason}").ConfigureAwait(false);
+                        var logChannel = _client.GetChannel(ulong.Parse(_config["errorLogChannel"])) as ITextChannel;
+                        await logChannel.SendMessageAsync($"Error while executing `{command.Value.Name}` for {context.Message.Author}: {resultStr}\n```{result.ErrorReason}```").ConfigureAwait(false);
+                        break;
+                    case CommandError.BadArgCount:
+                        await context.Channel.SendMessageAsync("Not enough arguments for this command!").ConfigureAwait(false);
+                        break;
+                    case CommandError.ObjectNotFound:
+                        await context.Channel.SendMessageAsync("Internal error while getting command arguments!").ConfigureAwait(false);
+                        logChannel = _client.GetChannel(ulong.Parse(_config["errorLogChannel"])) as ITextChannel;
+                        await logChannel.SendMessageAsync($"Error while executing `{command.Value.Name}` for {context.Message.Author}: {resultStr}\n```{result.ErrorReason}```").ConfigureAwait(false);
+                        break;
+                    case CommandError.MultipleMatches:
+                        await context.Channel.SendMessageAsync("Multiple matches were found for one of the command's arguments!").ConfigureAwait(false);
+                        break;
+                    case CommandError.UnmetPrecondition:
+                        await context.Channel.SendMessageAsync($"Unmet precondition for command: {result.ErrorReason}").ConfigureAwait(false);
+                        break;
+                    case CommandError.Exception:
+                    case CommandError.Unsuccessful:
+                        await context.Channel.SendMessageAsync("Internal error while executing command!").ConfigureAwait(false);
+                        logChannel = _client.GetChannel(ulong.Parse(_config["errorLogChannel"])) as ITextChannel;
+                        await logChannel.SendMessageAsync($"Error while executing `{command.Value.Name}` for {context.Message.Author}: {resultStr}\n```{result.ErrorReason}```").ConfigureAwait(false);
+                        break;
+                }
             }
         }
     }
