@@ -13,7 +13,7 @@ namespace GeneralPurposeBot.Modules
 {
     public class GetAvatar : ModuleBase
     {
-        private HttpClient _client;
+        private readonly HttpClient _client;
         public GetAvatar(HttpClient client)
         {
             _client = client;
@@ -31,8 +31,8 @@ namespace GeneralPurposeBot.Modules
             {
                 url = Context.User.GetAvatarUrl(ImageFormat.Auto, 2048);
             }
-            var imageStream = await _client.GetStreamAsync(url);
-            await Context.Channel.SendFileAsync(imageStream, new Uri(url).Segments[^1]);
+            var imageStream = await _client.GetStreamAsync(url).ConfigureAwait(false);
+            await Context.Channel.SendFileAsync(imageStream, new Uri(url).Segments[^1]).ConfigureAwait(false);
         }
     }
 }
