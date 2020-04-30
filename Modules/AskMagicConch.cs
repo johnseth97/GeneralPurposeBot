@@ -10,7 +10,7 @@ namespace GeneralPurposeBot.Modules
 {
     public class AskMagicConch : ModuleBase
     {
-        [Command("MagicConch"), Summary("!MagicConch to start a conversation with the Magic Conch")]
+        [Command("MagicConch"), Summary("!MagicConch <question>")]
         [Alias("ask")]
         public async Task MagicConch([Remainder]string args = null)
         {
