@@ -12,7 +12,6 @@ namespace GeneralPurposeBot
 {
     public class Program
     {
-
         // build the configuration and assign to _config
         private readonly IConfiguration _config;
         private DiscordSocketClient _client;
@@ -24,48 +23,39 @@ namespace GeneralPurposeBot
         {
             var path = args.Length > 0 ? args[0] : "config.json";
             _config = new ConfigurationBuilder().AddJsonFile(path).Build();
-
         }
 
         public async Task MainAsync()
         {
             // call ConfigureServices to create the ServiceCollection/Provider for passing around the services
-            using (var services = ConfigureServices())
-            {
-                // get the client and assign to client
-                // you get the services via GetRequiredService<T>
-                var client = services.GetRequiredService<DiscordSocketClient>();
-                _client = client;
+            using var services = ConfigureServices();
 
-                // setup logging and the ready event
-                client.Log += LogAsync;
-                client.Ready += ReadyAsync;
-                services.GetRequiredService<CommandService>().Log += LogAsync;
+            // get the client and assign to client
+            // you get the services via GetRequiredService<T>
+            var client = services.GetRequiredService<DiscordSocketClient>();
+            _client = client;
 
-                // this is where we get the Token value from the configuration file, and start the bot
-                await client.LoginAsync(TokenType.Bot, _config["Token"]);
-                await client.StartAsync();
+            // setup logging and the ready event
+            client.Log += Log;
+            client.Ready += Ready;
+            services.GetRequiredService<CommandService>().Log += Log;
 
-                // we get the CommandHandler class here and call the InitializeAsync method to start things up for the CommandHandler service
-                await services.GetRequiredService<CommandHandler>().InitializeAsync();
-                await services.GetRequiredService<CuteDetection>().InitializeAsync();
+            // this is where we get the Token value from the configuration file, and start the bot
+            await client.LoginAsync(TokenType.Bot, _config["Token"]).ConfigureAwait(false);
+            await client.StartAsync().ConfigureAwait(false);
 
+            // we get the CommandHandler class here and call the InitializeAsync method to start things up for the CommandHandler service
+            await services.GetRequiredService<CommandHandler>().InitializeAsync().ConfigureAwait(false);
+            await services.GetRequiredService<CuteDetection>().InitializeAsync().ConfigureAwait(false);
 
-                await Task.Delay(-1);
-            }
-        }
-        private Task LogAsync(LogMessage log)
-        {
-            Console.WriteLine(log.ToString());
-            return Task.CompletedTask;
+            await Task.Delay(-1).ConfigureAwait(false);
         }
 
-        private Task ReadyAsync()
+        private Task Ready()
         {
             Console.WriteLine($"Connected as -> [{_client.CurrentUser}] :)");
             return Task.CompletedTask;
         }
-
 
         private Task Log(LogMessage msg)
         {
@@ -89,6 +79,5 @@ namespace GeneralPurposeBot
                 .AddSingleton<HttpClient>()
                 .BuildServiceProvider();
         }
-
     }
 }
