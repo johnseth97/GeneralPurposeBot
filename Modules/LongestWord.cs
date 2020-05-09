@@ -10,9 +10,9 @@ namespace GeneralPurposeBot.Modules
 {
     public class LongestWord : ModuleBase
     {
-        [Command("lww"), Summary("!lww: Gets the longest word in the english language that doesn't contain the letters specified")]
-        [Alias("ask")]
-        public async Task MagicConch([Remainder] string args = null)
+        [Command("LongestWordWithout"), Summary("!lww: Gets the longest word in the english language that doesn't contain the letters specified")]
+        [Alias("lww")]
+        public async Task lww([Remainder] string args = null)
         {
             // I like using StringBuilder to build out the reply
             var sb = new StringBuilder();
@@ -23,13 +23,13 @@ namespace GeneralPurposeBot.Modules
 
             var longestAcceptableWord = "";
 
-            for (int i = 1; i < words.Length; i++)
+            foreach (var testWord in words)
             {
-                if (words[i].ToLower().IndexOfAny(args.ToLower().ToCharArray()) >= 0)
+                if (testWord.ToLower().IndexOfAny(args.ToLower().ToCharArray()) >= 0)
                     continue;
 
-                else if (words[i].Length >= longestAcceptableWord.Length)
-                    longestAcceptableWord = words[i];
+                else if (testWord.Length >= longestAcceptableWord.Length)
+                    longestAcceptableWord = testWord;
             }
 
             embed.WithColor(new Color(0, 255, 0));
