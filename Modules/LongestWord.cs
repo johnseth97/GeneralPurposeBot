@@ -35,7 +35,6 @@ namespace GeneralPurposeBot.Modules
             embed.WithColor(new Color(0, 255, 0));
             embed.Title = "Longest Word";
             sb.AppendLine($"The Longest word without the letter(s): [**{args}**] is");
-            sb.AppendLine();
             sb.AppendLine($"[**{longestAcceptableWord}**]");
             sb.AppendLine();
             sb.AppendLine($"It is [**{longestAcceptableWord.Length}**] characters long!");
