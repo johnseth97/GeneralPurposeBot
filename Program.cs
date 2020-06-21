@@ -1,84 +1,40 @@
-﻿using GeneralPurposeBot.Services;
-using Discord.Commands;
+﻿using Discord.Commands;
 using Discord.WebSocket;
-using Discord;
+using GeneralPurposeBot.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 
 namespace GeneralPurposeBot
 {
-    public class Program
+    public static class Program
     {
-        // build the configuration and assign to _config
-        private readonly IConfiguration _config;
-        private DiscordSocketClient _client;
-
         public static void Main(string[] args)
+            => CreateHostBuilder(args).Build().Run();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration(cfg => cfg.AddJsonFile("appsettings.json", true))
+                .ConfigureAppConfiguration(cfg => cfg.AddJsonFile("config.json", true)) // old config file name
+                .ConfigureAppConfiguration(cfg => cfg.AddEnvironmentVariables())
+                .ConfigureAppConfiguration(cfg => cfg.AddCommandLine(args))
+                .ConfigureLogging((host, logger) => logger.AddConfiguration(host.Configuration.GetSection("Logging")))
+                .ConfigureLogging(logger => logger.AddConsole())
+                .ConfigureServices(ConfigureServices)
+                .ConfigureServices(services => services.AddHostedService<BotHostedService>());
+
+        private static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
         {
-            new Program(args).MainAsync().GetAwaiter().GetResult();
-        }
-        public Program(string[] args)
-        {
-            var path = args.Length > 0 ? args[0] : "config.json";
-            _config = new ConfigurationBuilder().AddJsonFile(path).Build();
-        }
-
-        public async Task MainAsync()
-        {
-            // call ConfigureServices to create the ServiceCollection/Provider for passing around the services
-            using var services = ConfigureServices();
-
-            // get the client and assign to client
-            // you get the services via GetRequiredService<T>
-            var client = services.GetRequiredService<DiscordSocketClient>();
-            _client = client;
-
-            // setup logging and the ready event
-            client.Log += Log;
-            client.Ready += Ready;
-            services.GetRequiredService<CommandService>().Log += Log;
-
-            // this is where we get the Token value from the configuration file, and start the bot
-            await client.LoginAsync(TokenType.Bot, _config["Token"]).ConfigureAwait(false);
-            await client.StartAsync().ConfigureAwait(false);
-
-            // we get the CommandHandler class here and call the InitializeAsync method to start things up for the CommandHandler service
-            await services.GetRequiredService<CommandHandler>().InitializeAsync().ConfigureAwait(false);
-            await services.GetRequiredService<CuteDetection>().InitializeAsync().ConfigureAwait(false);
-
-            await Task.Delay(-1).ConfigureAwait(false);
-        }
-
-        private Task Ready()
-        {
-            Console.WriteLine($"Connected as -> [{_client.CurrentUser}] :)");
-            return Task.CompletedTask;
-        }
-
-        private Task Log(LogMessage msg)
-        {
-            Console.WriteLine(msg.ToString());
-            return Task.CompletedTask;
-        }
-
-        // this method handles the ServiceCollection creation/configuration, and builds out the service provider we can call on later
-        private ServiceProvider ConfigureServices()
-        {
-            // this returns a ServiceProvider that is used later to call for those services
-            // we can add types we have access to here, hence adding the new using statement:
-            // using csharpi.Services;
-            // the config we build is also added, which comes in handy for setting the command prefix!
-            return new ServiceCollection()
-                .AddSingleton(_config)
-                .AddSingleton<DiscordSocketClient>()
-                .AddSingleton<CommandService>()
-                .AddSingleton<CommandHandler>()
-                .AddSingleton<CuteDetection>()
-                .AddSingleton<HttpClient>()
-                .BuildServiceProvider();
+            services.AddSingleton<DiscordSocketClient>();
+            services.AddSingleton<CommandService>();
+            services.AddSingleton<CommandHandler>();
+            services.AddSingleton<CuteDetection>();
+            services.AddSingleton<DiscordLogWrapper>();
+            services.AddSingleton<HttpClient>();
         }
     }
 }
