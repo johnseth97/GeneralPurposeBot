@@ -17,8 +17,9 @@ namespace GeneralPurposeBot
         private DiscordSocketClient _client;
 
         public static void Main(string[] args)
-            => new Program(args).MainAsync().GetAwaiter().GetResult();
-
+        {
+            new Program(args).MainAsync().GetAwaiter().GetResult();
+        }
         public Program(string[] args)
         {
             var path = args.Length > 0 ? args[0] : "config.json";
