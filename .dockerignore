@@ -1,0 +1,6 @@
+.vs
+.vscode
+.github
+.gitmodules
+bin
+obj
