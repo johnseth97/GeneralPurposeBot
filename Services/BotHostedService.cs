@@ -23,6 +23,7 @@ namespace GeneralPurposeBot.Services
         public CuteDetection CuteDetection { get; }
         public DiscordLogWrapper LogWrapper { get; }
         public ILogger<BotHostedService> Logger { get; }
+        public TempVcService TempVcService { get; }
 
         public BotHostedService(DiscordSocketClient client,
             IConfiguration config,
@@ -30,7 +31,8 @@ namespace GeneralPurposeBot.Services
             CommandService commandService,
             CuteDetection cuteDetection,
             DiscordLogWrapper logWrapper,
-            ILogger<BotHostedService> logger)
+            ILogger<BotHostedService> logger,
+            TempVcService tempVcService)
         {
             Client = client;
             Config = config;
@@ -39,6 +41,7 @@ namespace GeneralPurposeBot.Services
             CuteDetection = cuteDetection;
             LogWrapper = logWrapper;
             Logger = logger;
+            TempVcService = tempVcService;
         }
 
 
