@@ -14,7 +14,7 @@ namespace GeneralPurposeBot.Modules
     [Group("database")]
     public class DatabaseModule : ModuleBase<SocketCommandContext>
     {
-        private BotDbContext DbContext { get; set; }
+        private BotDbContext DbContext { get; }
         public DatabaseModule(BotDbContext dbContext)
         {
             DbContext = dbContext;
