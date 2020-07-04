@@ -38,7 +38,7 @@ namespace GeneralPurposeBot
             services.AddSingleton<HttpClient>();
 
             services.AddDbContext<BotDbContext>(options =>
-                options.UseMySql(host.Configuration.GetConnectionString("mysql")), ServiceLifetime.Transient, ServiceLifetime.Transient);
+                options.UseMySql(host.Configuration.GetConnectionString("mysql")), ServiceLifetime.Singleton, ServiceLifetime.Singleton);
         }
     }
 }
