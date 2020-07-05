@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
 using GeneralPurposeBot.Models;
 using Microsoft.Extensions.Logging;
@@ -44,10 +45,19 @@ namespace GeneralPurposeBot.Services
                 var newVoiceChannel = await guild.CreateVoiceChannelAsync(name + "'s Voice Chat",
                     (properties) => properties.CategoryId = props.TempVoiceCategoryId)
                     .ConfigureAwait(false);
-                await newVoiceChannel.AddPermissionOverwriteAsync(user, OverwritePermissions.AllowAll(newVoiceChannel)).ConfigureAwait(false);
+
+                var perms = GetOwnerPermissions(newVoiceChannel);
+                await newVoiceChannel.AddPermissionOverwriteAsync(user, perms).ConfigureAwait(false);
                 await guildUser.ModifyAsync(vcUser => vcUser.Channel = newVoiceChannel).ConfigureAwait(false);
             }
             await RemoveOldVc(before, props).ConfigureAwait(false);
+            await ChangeOwnerIfCreatorLeft(before, props, user, guildUser).ConfigureAwait(false);
+        }
+
+        private static OverwritePermissions GetOwnerPermissions(IVoiceChannel newVoiceChannel)
+        {
+            var perms = OverwritePermissions.AllowAll(newVoiceChannel);
+            return perms.Modify(createInstantInvite: PermValue.Inherit, manageChannel: PermValue.Inherit);
         }
 
         public async Task<bool> DoSpamChecks(IGuildUser guildUser, ServerProperties props, IGuild guild)
@@ -83,9 +93,9 @@ namespace GeneralPurposeBot.Services
 
             return true;
         }
-        private async Task RenameVcIfCreatorLeft(SocketVoiceState vc, ServerProperties serverProperties, SocketUser user, IGuildUser guildUser)
+        private async Task ChangeOwnerIfCreatorLeft(SocketVoiceState vc, ServerProperties serverProperties, SocketUser user, IGuildUser guildUser)
         {
-            string name = !(string.IsNullOrEmpty(guildUser.Nickname)) ? guildUser.Nickname : user.Username;
+            string name = !string.IsNullOrEmpty(guildUser.Nickname) ? guildUser.Nickname : user.Username;
             if (vc.VoiceChannel != null &&
                 vc.VoiceChannel.Users.Count != 0 &&
                 vc.VoiceChannel.CategoryId == serverProperties.TempVoiceCategoryId &&
@@ -95,6 +105,9 @@ namespace GeneralPurposeBot.Services
                 var newOwner = vc.VoiceChannel.Users.First();
                 var newName = !string.IsNullOrEmpty(newOwner.Nickname) ? newOwner.Nickname : newOwner.Username;
                 await vc.VoiceChannel.ModifyAsync(vc => vc.Name = newName + "'s Voice Chat").ConfigureAwait(false);
+                // Fix owner permissions
+                await vc.VoiceChannel.RemovePermissionOverwriteAsync(user).ConfigureAwait(false);
+                await vc.VoiceChannel.AddPermissionOverwriteAsync(newOwner, GetOwnerPermissions(vc.VoiceChannel)).ConfigureAwait(false);
             }
         }
 
