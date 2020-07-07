@@ -113,8 +113,7 @@ namespace GeneralPurposeBot.Services
 
         private async Task RemoveOldVc(SocketVoiceState vc, ServerProperties serverProperties)
         {
-            if (vc.VoiceChannel != null &&
-                vc.VoiceChannel.Users.Count == 0 &&
+            if (vc.VoiceChannel?.Users.Count == 0 &&
                 vc.VoiceChannel.CategoryId == serverProperties.TempVoiceCategoryId &&
                 vc.VoiceChannel.Id != serverProperties.TempVoiceCreateChannelId)
             {
