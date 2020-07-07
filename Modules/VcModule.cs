@@ -64,6 +64,18 @@ namespace GeneralPurposeBot.Modules
             return perms.ManageRoles && IsVcManaged(vc);
         }
 
+        /// <summary>
+        /// Returns if everyone is able to join the VC
+        /// </summary>
+        /// <param name="vc">VC to check</param>
+        /// <returns>If everyone is able to join the VC</returns>
+        public bool IsVcPublic(IVoiceChannel vc)
+        {
+            var perms = vc.GetPermissionOverwrite(vc.Guild.EveryoneRole) ?? OverwritePermissions.InheritAll;
+            return (perms.ViewChannel == PermValue.Allow || perms.ViewChannel == PermValue.Inherit) &&
+                (perms.Connect == PermValue.Allow || perms.Connect == PermValue.Inherit);
+        }
+
         [Command("info")]
         public async Task Info()
         {
@@ -74,7 +86,11 @@ namespace GeneralPurposeBot.Modules
                 return;
             }
             var members = await vc.GetUsersAsync().FlattenAsync().ConfigureAwait(false);
-            await ReplyAsync($"You are in **{vc.Name}** with **{members.Count()}** users in the vc. VC managed by bot: **{IsVcManaged(vc)}** VC can be managed by user: **{await CanManageVc(vc).ConfigureAwait(false)}**").ConfigureAwait(false);
+            await ReplyAsync($"You are in **{vc.Name}** with **{members.Count()}** users in the vc. \n" +
+                $"VC managed by bot: **{IsVcManaged(vc)}** \n" +
+                $"VC can be managed by user: **{await CanManageVc(vc).ConfigureAwait(false)}** \n" +
+                $"VC is public: **{IsVcPublic(vc)}**")
+                .ConfigureAwait(false);
         }
 
         [Command("private")]
@@ -97,9 +113,8 @@ namespace GeneralPurposeBot.Modules
                 await ReplyAsync("You do not have permission to manage this VC!").ConfigureAwait(false);
                 return;
             }
+            var wasPublic = IsVcPublic(vc);
             var perms = vc.GetPermissionOverwrite(Context.Guild.EveryoneRole) ?? OverwritePermissions.InheritAll;
-            var wasPublic = (perms.ViewChannel == PermValue.Allow || perms.ViewChannel == PermValue.Inherit) &&
-                (perms.Connect == PermValue.Allow || perms.Connect == PermValue.Inherit);
             var newPerm = wasPublic ? PermValue.Deny : PermValue.Allow;
             await vc.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, perms.Modify(viewChannel: newPerm, connect: newPerm)).ConfigureAwait(false);
             await ReplyAsync($"Your VC is now set to **{(wasPublic ? "private" : "public")}**").ConfigureAwait(false);
