@@ -75,6 +75,15 @@ namespace GeneralPurposeBot.Modules
             return (perms.ViewChannel == PermValue.Allow || perms.ViewChannel == PermValue.Inherit) &&
                 (perms.Connect == PermValue.Allow || perms.Connect == PermValue.Inherit);
         }
+        public bool IsVcNsfw(IVoiceChannel vc)
+        {
+            var props = SpService.GetProperties(vc.Guild.Id);
+            if (props.NsfwRoleId == 0)
+                return false;
+            var isPrivate = !IsVcPublic(vc);
+            var perms = vc.GetPermissionOverwrite(vc.Guild.GetRole(props.NsfwRoleId)) ?? OverwritePermissions.InheritAll;
+            return isPrivate && (perms.ViewChannel == PermValue.Allow && perms.Connect == PermValue.Allow);
+        }
 
         [Command("info")]
         public async Task Info()
@@ -86,10 +95,11 @@ namespace GeneralPurposeBot.Modules
                 return;
             }
             var members = await vc.GetUsersAsync().FlattenAsync().ConfigureAwait(false);
-            await ReplyAsync($"You are in **{vc.Name}** with **{members.Count()}** users in the vc. \n" +
-                $"VC managed by bot: **{IsVcManaged(vc)}** \n" +
-                $"VC can be managed by user: **{await CanManageVc(vc).ConfigureAwait(false)}** \n" +
-                $"VC is public: **{IsVcPublic(vc)}**")
+            await ReplyAsync($"You are in **{vc.Name}** with **{members.Count()}** users in the vc.\n" +
+                $"VC managed by bot: **{IsVcManaged(vc)}**\n" +
+                $"VC can be managed by user: **{await CanManageVc(vc).ConfigureAwait(false)}**\n" +
+                $"VC is public: **{IsVcPublic(vc)}**\n" +
+                $"VC is NSFW: **{IsVcNsfw(vc)}**")
                 .ConfigureAwait(false);
         }
 
@@ -144,8 +154,56 @@ namespace GeneralPurposeBot.Modules
             var allowUser = !userPerms.Connect || !userPerms.ViewChannel;
             var newPerm = allowUser ? PermValue.Allow : PermValue.Inherit;
             var userOverwrite = vc.GetPermissionOverwrite(target) ?? OverwritePermissions.InheritAll;
-            await vc.AddPermissionOverwriteAsync(target, userOverwrite.Modify(viewChannel: newPerm, connect: newPerm));
+            await vc.AddPermissionOverwriteAsync(target, userOverwrite.Modify(viewChannel: newPerm, connect: newPerm)).ConfigureAwait(false);
             await ReplyAsync($"**{target.Mention}** is now **{(allowUser ? "allowed" : "not allowed")}** to join the VC when it is private.").ConfigureAwait(false);
+        }
+
+        [Command("nsfw")]
+        public async Task Nsfw()
+        {
+            var vc = await GetUserVoiceChannel().ConfigureAwait(false);
+            if (vc == null)
+            {
+                await ReplyAsync("You are not in a VC!").ConfigureAwait(false);
+                return;
+            }
+            if (!IsVcManaged(vc))
+            {
+                await ReplyAsync("You are not in a temporary VC!").ConfigureAwait(false);
+                return;
+            }
+            if (!await CanManageVc(vc).ConfigureAwait(false))
+            {
+                await ReplyAsync("You do not have permission to manage this VC!").ConfigureAwait(false);
+                return;
+            }
+            var props = SpService.GetProperties(vc.GuildId);
+            if (props.NsfwRoleId == 0)
+            {
+                await ReplyAsync("There is no NSFW role defined! Have a server admin run `serverproperties nsfwrole [rolename]`").ConfigureAwait(false);
+                return;
+            }
+            var nsfw = !IsVcNsfw(vc);
+            var newPerm = nsfw ? PermValue.Allow : PermValue.Inherit;
+            var nsfwRole = vc.Guild.GetRole(props.NsfwRoleId);
+            var perms = vc.GetPermissionOverwrite(nsfwRole) ?? OverwritePermissions.InheritAll;
+            await vc.AddPermissionOverwriteAsync(nsfwRole, perms.Modify(viewChannel: newPerm, connect: newPerm)).ConfigureAwait(false);
+            var message = $"This VC is now **{(nsfw ? "NSFW" : "SFW")}**";
+            if (nsfw && IsVcPublic(vc))
+            {
+                var everyonePerms = vc.GetPermissionOverwrite(Context.Guild.EveryoneRole) ?? OverwritePermissions.InheritAll;
+                everyonePerms = everyonePerms.Modify(viewChannel: PermValue.Deny, connect: PermValue.Deny);
+                await vc.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, everyonePerms).ConfigureAwait(false);
+                message += "\n**Note:** Your VC was public before, and we made it NSFW, so we turned it into a private VC. ";
+                message += "Everyone with the NSFW role is still able to join, but you will need to manually turn it back ";
+                message += "info a public VC if you make the VC SFW again.";
+            }
+            else if (!nsfw && !IsVcPublic(vc))
+            {
+                message += "\n**Note:** Your VC is still private! Only those you allow with `vc allow` are able to join. ";
+                message += "Run `vc private` to make it public again.";
+            }
+            await ReplyAsync(message).ConfigureAwait(false);
         }
     }
 }
