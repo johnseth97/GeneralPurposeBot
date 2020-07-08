@@ -31,6 +31,7 @@ namespace GeneralPurposeBot.Services
         public async Task UserVoiceStateUpdated(SocketUser user, SocketVoiceState before, SocketVoiceState after)
         {
             var guild = (after.VoiceChannel != null ? after : before).VoiceChannel.Guild;
+            if (before.VoiceChannel?.Id == after.VoiceChannel?.Id) return;
 
             var props = SpService.GetProperties(guild.Id);
             var guildUser = guild.GetUser(user.Id);
@@ -57,7 +58,7 @@ namespace GeneralPurposeBot.Services
         private static OverwritePermissions GetOwnerPermissions(IVoiceChannel newVoiceChannel)
         {
             var perms = OverwritePermissions.AllowAll(newVoiceChannel);
-            return perms.Modify(createInstantInvite: PermValue.Inherit, manageChannel: PermValue.Inherit);
+            return perms.Modify(createInstantInvite: PermValue.Inherit, manageChannel: PermValue.Inherit, deafenMembers: PermValue.Inherit, muteMembers: PermValue.Inherit);
         }
 
         public async Task<bool> DoSpamChecks(IGuildUser guildUser, ServerProperties props, IGuild guild)
