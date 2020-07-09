@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -205,5 +206,33 @@ namespace GeneralPurposeBot.Modules
             }
             await ReplyAsync(message).ConfigureAwait(false);
         }
+
+        [Command("trust")]
+        [Alias("untrust", "addowner", "removeowner", "owner")]
+        public async Task Trust(IGuildUser target)
+        {
+            var vc = await GetUserVoiceChannel().ConfigureAwait(false);
+            if (vc == null)
+            {
+                await ReplyAsync("You are not in a VC!").ConfigureAwait(false);
+                return;
+            }
+            if (!IsVcManaged(vc))
+            {
+                await ReplyAsync("You are not in a temporary VC!").ConfigureAwait(false);
+                return;
+            }
+            if (!await CanManageVc(vc).ConfigureAwait(false))
+            {
+                await ReplyAsync("You do not have permission to manage this VC!").ConfigureAwait(false);
+                return;
+            }
+
+            var targetPerms = vc.GetPermissionOverwrite(target) ?? OverwritePermissions.InheritAll;
+            var canManage = targetPerms.ManageRoles == PermValue.Allow;
+            var newPerms = canManage ? OverwritePermissions.InheritAll : TempVcService.GetOwnerPermissions(vc);
+            await vc.AddPermissionOverwriteAsync(target, newPerms).ConfigureAwait(false);
+            await ReplyAsync($"{target.Mention} is **{(canManage ? "no longer able" : "able")}** to manage this VC.").ConfigureAwait(false);
+         }
     }
 }
