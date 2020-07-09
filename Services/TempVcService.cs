@@ -55,7 +55,7 @@ namespace GeneralPurposeBot.Services
             await ChangeOwnerIfCreatorLeft(before, props, user, guildUser).ConfigureAwait(false);
         }
 
-        private static OverwritePermissions GetOwnerPermissions(IVoiceChannel newVoiceChannel)
+        public static OverwritePermissions GetOwnerPermissions(IVoiceChannel newVoiceChannel)
         {
             var perms = OverwritePermissions.AllowAll(newVoiceChannel);
             return perms.Modify(createInstantInvite: PermValue.Inherit, manageChannel: PermValue.Inherit, deafenMembers: PermValue.Inherit, muteMembers: PermValue.Inherit);
