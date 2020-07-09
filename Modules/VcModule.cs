@@ -87,14 +87,10 @@ namespace GeneralPurposeBot.Modules
         }
 
         [Command("info")]
+        [RequireVc]
         public async Task Info()
         {
             var vc = await GetUserVoiceChannel().ConfigureAwait(false);
-            if (vc == null)
-            {
-                await ReplyAsync("You are not in a VC!").ConfigureAwait(false);
-                return;
-            }
             var members = await vc.GetUsersAsync().FlattenAsync().ConfigureAwait(false);
             await ReplyAsync($"You are in **{vc.Name}** with **{members.Count()}** users in the vc.\n" +
                 $"VC managed by bot: **{IsVcManaged(vc)}**\n" +
@@ -106,24 +102,10 @@ namespace GeneralPurposeBot.Modules
 
         [Command("private")]
         [Alias("public", "lock", "unlock")]
+        [RequireTempVcManagement]
         public async Task Private()
         {
             var vc = await GetUserVoiceChannel().ConfigureAwait(false);
-            if (vc == null)
-            {
-                await ReplyAsync("You are not in a VC!").ConfigureAwait(false);
-                return;
-            }
-            if (!IsVcManaged(vc))
-            {
-                await ReplyAsync("You are not in a temporary VC!").ConfigureAwait(false);
-                return;
-            }
-            if (!(await CanManageVc(vc).ConfigureAwait(false)))
-            {
-                await ReplyAsync("You do not have permission to manage this VC!").ConfigureAwait(false);
-                return;
-            }
             var wasPublic = IsVcPublic(vc);
             var perms = vc.GetPermissionOverwrite(Context.Guild.EveryoneRole) ?? OverwritePermissions.InheritAll;
             var newPerm = wasPublic ? PermValue.Deny : PermValue.Allow;
@@ -133,24 +115,10 @@ namespace GeneralPurposeBot.Modules
 
         [Command("allow")]
         [Alias("disallow", "add", "remove")]
+        [RequireTempVcManagement]
         public async Task Allow(IGuildUser target)
         {
             var vc = await GetUserVoiceChannel().ConfigureAwait(false);
-            if (vc == null)
-            {
-                await ReplyAsync("You are not in a VC!").ConfigureAwait(false);
-                return;
-            }
-            if (!IsVcManaged(vc))
-            {
-                await ReplyAsync("You are not in a temporary VC!").ConfigureAwait(false);
-                return;
-            }
-            if (!(await CanManageVc(vc).ConfigureAwait(false)))
-            {
-                await ReplyAsync("You do not have permission to manage this VC!").ConfigureAwait(false);
-                return;
-            }
             var userPerms = target.GetPermissions(vc);
             var allowUser = !userPerms.Connect || !userPerms.ViewChannel;
             var newPerm = allowUser ? PermValue.Allow : PermValue.Inherit;
@@ -160,24 +128,10 @@ namespace GeneralPurposeBot.Modules
         }
 
         [Command("nsfw")]
+        [RequireTempVcManagement]
         public async Task Nsfw()
         {
             var vc = await GetUserVoiceChannel().ConfigureAwait(false);
-            if (vc == null)
-            {
-                await ReplyAsync("You are not in a VC!").ConfigureAwait(false);
-                return;
-            }
-            if (!IsVcManaged(vc))
-            {
-                await ReplyAsync("You are not in a temporary VC!").ConfigureAwait(false);
-                return;
-            }
-            if (!await CanManageVc(vc).ConfigureAwait(false))
-            {
-                await ReplyAsync("You do not have permission to manage this VC!").ConfigureAwait(false);
-                return;
-            }
             var props = SpService.GetProperties(vc.GuildId);
             if (props.NsfwRoleId == 0)
             {
@@ -209,25 +163,10 @@ namespace GeneralPurposeBot.Modules
 
         [Command("trust")]
         [Alias("untrust", "addowner", "removeowner", "owner")]
+        [RequireTempVcManagement]
         public async Task Trust(IGuildUser target)
         {
             var vc = await GetUserVoiceChannel().ConfigureAwait(false);
-            if (vc == null)
-            {
-                await ReplyAsync("You are not in a VC!").ConfigureAwait(false);
-                return;
-            }
-            if (!IsVcManaged(vc))
-            {
-                await ReplyAsync("You are not in a temporary VC!").ConfigureAwait(false);
-                return;
-            }
-            if (!await CanManageVc(vc).ConfigureAwait(false))
-            {
-                await ReplyAsync("You do not have permission to manage this VC!").ConfigureAwait(false);
-                return;
-            }
-
             var targetPerms = vc.GetPermissionOverwrite(target) ?? OverwritePermissions.InheritAll;
             var canManage = targetPerms.ManageRoles == PermValue.Allow;
             var newPerms = canManage ? OverwritePermissions.InheritAll : TempVcService.GetOwnerPermissions(vc);
