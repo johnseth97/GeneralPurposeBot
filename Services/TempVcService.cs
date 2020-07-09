@@ -47,8 +47,11 @@ namespace GeneralPurposeBot.Services
                     (properties) => properties.CategoryId = props.TempVoiceCategoryId)
                     .ConfigureAwait(false);
 
-                var perms = GetOwnerPermissions(newVoiceChannel);
-                await newVoiceChannel.AddPermissionOverwriteAsync(user, perms).ConfigureAwait(false);
+                if (!props.SimpleTempVc)
+                {
+                    var perms = GetOwnerPermissions(newVoiceChannel);
+                    await newVoiceChannel.AddPermissionOverwriteAsync(user, perms).ConfigureAwait(false);
+                }
                 await guildUser.ModifyAsync(vcUser => vcUser.Channel = newVoiceChannel).ConfigureAwait(false);
             }
             await RemoveOldVc(before, props).ConfigureAwait(false);
@@ -107,8 +110,11 @@ namespace GeneralPurposeBot.Services
                 var newName = !string.IsNullOrEmpty(newOwner.Nickname) ? newOwner.Nickname : newOwner.Username;
                 await vc.VoiceChannel.ModifyAsync(vc => vc.Name = newName + "'s Voice Chat").ConfigureAwait(false);
                 // Fix owner permissions
-                await vc.VoiceChannel.RemovePermissionOverwriteAsync(user).ConfigureAwait(false);
-                await vc.VoiceChannel.AddPermissionOverwriteAsync(newOwner, GetOwnerPermissions(vc.VoiceChannel)).ConfigureAwait(false);
+                if (!serverProperties.SimpleTempVc)
+                {
+                    await vc.VoiceChannel.RemovePermissionOverwriteAsync(user).ConfigureAwait(false);
+                    await vc.VoiceChannel.AddPermissionOverwriteAsync(newOwner, GetOwnerPermissions(vc.VoiceChannel)).ConfigureAwait(false);
+                }
             }
         }
 

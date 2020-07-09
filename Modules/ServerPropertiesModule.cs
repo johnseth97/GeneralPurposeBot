@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace GeneralPurposeBot.Modules
@@ -45,6 +46,7 @@ namespace GeneralPurposeBot.Modules
             eb.AddField("NSFW Role", nsfwRole?.Name ?? "None");
             eb.AddField("Temporary Voice Channel Category", tempCategory?.Name ?? "None");
             eb.AddField("Temporary Voice Creation Channel", tempChannel?.Name ?? "None");
+            eb.AddField("Simple Temp VCs", props.SimpleTempVc ? "Enabled" : "Disabled");
             await ReplyAsync("", false, eb.Build()).ConfigureAwait(false);
         }
 
@@ -150,6 +152,20 @@ namespace GeneralPurposeBot.Modules
             props.TempVoiceCreateChannelId = channel.Id;
             SpService.UpdateProperties(props);
             await ReplyAsync("Set the temporary voice creation channel to " + channel.Name).ConfigureAwait(false);
+        }
+
+        [Command("SimpleTempVCs"), Summary("Disables advanced VC features such as private voice channels on this server")]
+        public async Task SimpleTempVC(bool? enabled = null)
+        {
+            var props = SpService.GetProperties(Context.Guild.Id);
+            if (!enabled.HasValue)
+            {
+                await ReplyAsync($"Simple VCs are **{(props.SimpleTempVc ? "enabled" : "disabled")}** on this server").ConfigureAwait(false);
+                return;
+            }
+            props.SimpleTempVc = enabled.Value;
+            SpService.UpdateProperties(props);
+            await ReplyAsync($"Simple VCs are now **{(enabled.Value ? "enabled" : "disabled")}** on this server").ConfigureAwait(false);
         }
     }
 }

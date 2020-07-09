@@ -14,5 +14,6 @@ namespace GeneralPurposeBot.Models
         public ulong TempVoiceCategoryId { get; set; }
         public ulong TempVoiceCreateChannelId { get; set; }
         public ulong NsfwRoleId { get; set; }
+        public bool SimpleTempVc { get; set; }
     }
 }
