@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using GeneralPurposeBot.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,6 +36,11 @@ namespace GeneralPurposeBot
             services.AddSingleton<CuteDetection>();
             services.AddSingleton<DiscordLogWrapper>();
             services.AddSingleton<HttpClient>();
+            services.AddSingleton<ServerPropertiesService>();
+            services.AddSingleton<TempVcService>();
+
+            services.AddDbContext<BotDbContext>(options =>
+                options.UseMySql(host.Configuration.GetConnectionString("mysql")), ServiceLifetime.Singleton, ServiceLifetime.Singleton);
         }
     }
 }

@@ -2,3 +2,4 @@ config.json
 obj/*
 bin/*
 .prettierrc
+.vs
