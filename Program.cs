@@ -43,7 +43,7 @@ namespace GeneralPurposeBot
 
             string connStr = null;
             var connStrs = host.Configuration.GetSection("ConnectionStrings");
-            if (connStrs.GetChildren().Any(item => item.Key == "mysql") && false)
+            if (connStrs.GetChildren().Any(item => item.Key == "mysql"))
             {
                 connStr = connStrs["mysql"];
             }
