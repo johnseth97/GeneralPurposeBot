@@ -24,6 +24,8 @@ build:
 deploy:
     stage: deploy
     image: alpine:latest
+    only:
+        - master
     script:
         - apk update
         - apk add openssh
