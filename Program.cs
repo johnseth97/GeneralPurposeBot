@@ -39,8 +39,16 @@ namespace GeneralPurposeBot
             services.AddSingleton<ServerPropertiesService>();
             services.AddSingleton<TempVcService>();
 
+            var connStr = host.Configuration.GetConnectionString("mysql");
+            if (connStr == null && host.Configuration["DatabaseUrl"] != null)
+            {
+                var uri = new Uri(host.Configuration["DatabaseUrl"]);
+                var username = uri.UserInfo.Split(':')[0];
+                var password = uri.UserInfo.Split(':')[1];
+                connStr = $"Host={uri.Host};Database={uri.AbsolutePath.Trim('/')};Username={username};Password={password};Port={uri.Port}";
+            }
             services.AddDbContext<BotDbContext>(options =>
-                options.UseMySql(host.Configuration.GetConnectionString("mysql")), ServiceLifetime.Singleton, ServiceLifetime.Singleton);
+                options.UseMySql(connStr), ServiceLifetime.Singleton, ServiceLifetime.Singleton);
         }
     }
 }
