@@ -43,13 +43,13 @@ namespace GeneralPurposeBot
 
             string connStr = null;
             var connStrs = host.Configuration.GetSection("ConnectionStrings");
-            if (connStrs.GetChildren().Any(item => item.Key == "mysql"))
+            if (connStrs.GetChildren().Any(item => item.Key == "mysql") && false)
             {
                 connStr = connStrs["mysql"];
             }
-            else if (host.Configuration.GetChildren().Any(item => item.Key == "DatabaseUrl"))
+            else if (host.Configuration.GetChildren().Any(item => item.Key == "DATABASE_URL"))
             {
-                var uri = new Uri(host.Configuration["DatabaseUrl"]);
+                var uri = new Uri(host.Configuration["DATABASE_URL"]);
                 var username = uri.UserInfo.Split(':')[0];
                 var password = uri.UserInfo.Split(':')[1];
                 connStr = $"Host={uri.Host};Database={uri.AbsolutePath.Trim('/')};Username={username};Password={password};Port={uri.Port}";
