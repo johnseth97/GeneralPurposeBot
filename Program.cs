@@ -2,12 +2,14 @@
 using Discord.WebSocket;
 using GeneralPurposeBot.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 
@@ -39,13 +41,22 @@ namespace GeneralPurposeBot
             services.AddSingleton<ServerPropertiesService>();
             services.AddSingleton<TempVcService>();
 
-            var connStr = host.Configuration.GetConnectionString("mysql");
-            if (connStr == null && host.Configuration["DatabaseUrl"] != null)
+            string connStr = null;
+            var connStrs = host.Configuration.GetSection("ConnectionStrings");
+            if (connStrs.GetChildren().Any(item => item.Key == "mysql"))
+            {
+                connStr = connStrs["mysql"];
+            }
+            else if (host.Configuration.GetChildren().Any(item => item.Key == "DatabaseUrl"))
             {
                 var uri = new Uri(host.Configuration["DatabaseUrl"]);
                 var username = uri.UserInfo.Split(':')[0];
                 var password = uri.UserInfo.Split(':')[1];
                 connStr = $"Host={uri.Host};Database={uri.AbsolutePath.Trim('/')};Username={username};Password={password};Port={uri.Port}";
+            }
+            else
+            {
+                throw new Exception("Database URI not defined");
             }
             services.AddDbContext<BotDbContext>(options =>
                 options.UseMySql(connStr), ServiceLifetime.Singleton, ServiceLifetime.Singleton);
