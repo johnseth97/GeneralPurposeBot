@@ -127,5 +127,133 @@ namespace GeneralPurposeBot.Services
                 await vc.VoiceChannel.DeleteAsync().ConfigureAwait(false);
             }
         }
+
+        /// <summary>
+        /// Returns whether the specified voice channel is managed by the bot
+        /// </summary>
+        /// <param name="vc">VC to check</param>
+        /// <returns>If the VC is a temporary VC managed by the bot</returns>
+        public bool IsVcManaged(IVoiceChannel vc)
+        {
+            var guild = vc.Guild;
+            var props = SpService.GetProperties(guild.Id);
+            return vc.CategoryId == props.TempVoiceCategoryId;
+        }
+
+        /// <summary>
+        /// Returns if the user has permission to manage this voice channel via the bot.
+        /// Only returns true if the current VC is managed by the bot.
+        /// </summary>
+        /// <param name="vc">VC to check</param>
+        /// <returns>If the current user can manage the VC</returns>
+        public async Task<bool> CanManageVc(IVoiceChannel vc, ulong userId)
+        {
+            var guildUser = await vc.Guild.GetUserAsync(userId).ConfigureAwait(false);
+            var perms = guildUser.GetPermissions(vc);
+            return perms.ManageRoles && IsVcManaged(vc);
+        }
+
+        /// <summary>
+        /// Returns if everyone is able to join the VC
+        /// </summary>
+        /// <param name="vc">VC to check</param>
+        /// <returns>If everyone is able to join the VC</returns>
+        public bool IsVcPublic(IVoiceChannel vc)
+        {
+            var perms = vc.GetPermissionOverwrite(vc.Guild.EveryoneRole) ?? OverwritePermissions.InheritAll;
+            return (perms.ViewChannel == PermValue.Allow || perms.ViewChannel == PermValue.Inherit) &&
+                (perms.Connect == PermValue.Allow || perms.Connect == PermValue.Inherit);
+        }
+
+        /// <summary>
+        /// Checks if a VC is NSFW
+        /// </summary>
+        /// <param name="vc"></param>
+        /// <returns></returns>
+        public bool IsVcNsfw(IVoiceChannel vc)
+        {
+            var props = SpService.GetProperties(vc.GuildId);
+            if (props.NsfwRoleId == 0)
+                return false;
+            var isPrivate = !IsVcPublic(vc);
+            var perms = vc.GetPermissionOverwrite(vc.Guild.GetRole(props.NsfwRoleId)) ?? OverwritePermissions.InheritAll;
+            return isPrivate && (perms.ViewChannel == PermValue.Allow && perms.Connect == PermValue.Allow);
+        }
+
+        /// <summary>
+        /// Makes the VC public or private
+        /// </summary>
+        /// <param name="vc">VC to make private</param>
+        /// <param name="makePrivate">If the VC should be private</param>
+        public async Task SetPrivate(IVoiceChannel vc, bool makePrivate)
+        {
+            var perms = vc.GetPermissionOverwrite(vc.Guild.EveryoneRole) ?? OverwritePermissions.InheritAll;
+            var newPerm = makePrivate ? PermValue.Deny : PermValue.Allow;
+            await vc.AddPermissionOverwriteAsync(vc.Guild.EveryoneRole, perms.Modify(viewChannel: newPerm, connect: newPerm)).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Checks if a user can join the VC
+        /// </summary>
+        /// <param name="vc">VC to check</param>
+        /// <param name="user">User to check</param>
+        /// <returns>If the user can currently join the VC</returns>
+        public bool IsUserAllowed(IVoiceChannel vc, IGuildUser user)
+        {
+            var userPerms = user.GetPermissions(vc);
+            return userPerms.Connect && userPerms.ViewChannel;
+        }
+
+        /// <summary>
+        /// Sets whether a user is allowed to join a VC
+        /// </summary>
+        /// <param name="vc">VC to set permissions on</param>
+        /// <param name="user">User to set permissions on</param>
+        /// <param name="allowUser">If the user is allowed to join</param>
+        public async Task SetUserAllowed(IVoiceChannel vc, IGuildUser user, bool allowUser)
+        {
+            var newPerm = allowUser ? PermValue.Allow : PermValue.Inherit;
+            var userPerms = vc.GetPermissionOverwrite(user) ?? OverwritePermissions.InheritAll;
+            await vc.AddPermissionOverwriteAsync(user,
+                userPerms.Modify(viewChannel: newPerm, connect: newPerm)).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Sets if a VC should be NSFW or not
+        /// </summary>
+        /// <param name="vc">VC to modify</param>
+        /// <param name="nsfw">If the VC should be nsfw</param>
+        public async Task SetVcNsfw(IVoiceChannel vc, bool nsfw)
+        {
+            var props = SpService.GetProperties(vc.GuildId);
+            var newPerm = nsfw ? PermValue.Allow : PermValue.Inherit;
+            var nsfwRole = vc.Guild.GetRole(props.NsfwRoleId);
+            var perms = vc.GetPermissionOverwrite(nsfwRole) ?? OverwritePermissions.InheritAll;
+            await vc.AddPermissionOverwriteAsync(nsfwRole, perms.Modify(viewChannel: newPerm, connect: newPerm)).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Checks if a user is trusted to modify a VC
+        /// </summary>
+        /// <param name="vc">VC to check permissions on</param>
+        /// <param name="user">User to check permissions on</param>
+        /// <returns>If the user is trusted to modify the VC</returns>
+        public bool IsUserTrusted(IVoiceChannel vc, IGuildUser user)
+        {
+            var targetPerms = vc.GetPermissionOverwrite(user) ?? OverwritePermissions.InheritAll;
+            return targetPerms.ManageRoles == PermValue.Allow;
+        }
+
+        /// <summary>
+        /// Sets if a user is trusted to modify a vc's permissions
+        /// </summary>
+        /// <param name="vc">VC to modify</param>
+        /// <param name="user">User to trust/untrust</param>
+        /// <param name="trustUser">If the user should be trusted</param>
+        public async Task SetUserTrusted(IVoiceChannel vc, IGuildUser user, bool trustUser)
+        {
+            var newPerms = trustUser ? GetOwnerPermissions(vc) : OverwritePermissions.InheritAll;
+            await vc.AddPermissionOverwriteAsync(user, newPerms).ConfigureAwait(false);
+        }
     }
 }
