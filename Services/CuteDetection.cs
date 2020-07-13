@@ -32,12 +32,6 @@ namespace GeneralPurposeBot.Services
 
         }
 
-        public async Task InitializeAsync()
-        {
-            // register modules that are public and inherit ModuleBase<T>.
-            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
-        }
-
         public async Task CutieAlert(SocketMessage message)
         {
             //Checks message author so bot doesn't respond to itself

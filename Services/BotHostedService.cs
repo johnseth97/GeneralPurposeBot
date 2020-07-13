@@ -53,7 +53,6 @@ namespace GeneralPurposeBot.Services
             await Client.LoginAsync(TokenType.Bot, Config["Token"]).ConfigureAwait(false);
             await Client.StartAsync().ConfigureAwait(false);
             await CommandHandler.InitializeAsync().ConfigureAwait(false);
-            await CuteDetection.InitializeAsync().ConfigureAwait(false);
         }
 
         private Task Ready()

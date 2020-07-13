@@ -8,6 +8,10 @@
     <AssemblyName>GeneralPurposeBot</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Migrations\20200713221439_ServerModuleId.cs" />
+    <Compile Remove="Migrations\20200713221439_ServerModuleId.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.2.0" />
     <PackageReference Include="Discord.Net.WebSocket" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />

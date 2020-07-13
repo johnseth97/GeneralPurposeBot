@@ -2,17 +2,19 @@
 using Discord.Commands;
 using GeneralPurposeBot.Services;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.Update;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace GeneralPurposeBot.Modules
 {
     [Name("ServerProperties"), Summary("Various per-server settings for the bot")]
-    [Group("ServerProperties")]
+    [Group("ServerProperties"), Alias("sp")]
     [RequireUserPermission(Discord.GuildPermission.Administrator, ErrorMessage = "You must have the Server Administrator permission to use this command")]
     public class ServerPropertiesModule : ModuleBase
     {
@@ -166,6 +168,63 @@ namespace GeneralPurposeBot.Modules
             props.SimpleTempVc = enabled.Value;
             SpService.UpdateProperties(props);
             await ReplyAsync($"Simple VCs are now **{(enabled.Value ? "enabled" : "disabled")}** on this server").ConfigureAwait(false);
+        }
+
+        [Name("Module"), Summary("Enable and disable modules")]
+        [Group("module"), Alias("modules")]
+        [RequireUserPermission(Discord.GuildPermission.Administrator, ErrorMessage = "You must have the Server Administrator permission to use this command")]
+        public class Module : ModuleBase
+        {
+            public CommandHandler CommandHandler { get; }
+            public ServerPropertiesService SpService { get; }
+
+            public Module(CommandHandler commandHandler, ServerPropertiesService spService) {
+                CommandHandler = commandHandler;
+                SpService = spService;
+            }
+
+            [Command, Summary("Lists modules enabled and disabled on the bot")]
+            public async Task List()
+            {
+                var embed = new EmbedBuilder();
+                embed.WithTitle("Modules");
+                foreach (var module in CommandHandler.Commands.Modules)
+                {
+                    embed.Description += $"**{module.GetFullName()}** ({(SpService.IsModuleEnabled(module, Context.Guild.Id) ? "Enabled" : "Disabled")}) - " +
+                        $"{module.Summary ?? "No summary for module"}\n";
+                }
+                await ReplyAsync(embed: embed.Build()).ConfigureAwait(false);
+            }
+
+            [Command("disable"), Summary("Disable a module")]
+            public async Task Disable(string name)
+            {
+                var matchingModules = CommandHandler.Commands.Modules
+                    .Where(m => m.GetFullName() == name);
+                if (!matchingModules.Any())
+                {
+                    await ReplyAsync("No modules matched the name you gave!").ConfigureAwait(false);
+                    return;
+                }
+                var module = matchingModules.First();
+                await SpService.DisableModule(module, Context.Guild.Id).ConfigureAwait(false);
+                await ReplyAsync("Done").ConfigureAwait(false);
+            }
+
+            [Command("enable"), Summary("Enable a module")]
+            public async Task Enable(string name)
+            {
+                var matchingModules = CommandHandler.Commands.Modules
+                    .Where(m => m.GetFullName() == name);
+                if (!matchingModules.Any())
+                {
+                    await ReplyAsync("No modules matched the name you gave!").ConfigureAwait(false);
+                    return;
+                }
+                var module = matchingModules.First();
+                await SpService.EnableModule(module, Context.Guild.Id).ConfigureAwait(false);
+                await ReplyAsync("Done").ConfigureAwait(false);
+            }
         }
     }
 }
