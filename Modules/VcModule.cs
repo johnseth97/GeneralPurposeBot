@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace GeneralPurposeBot.Modules
 {
-    [Name("Voice Chat"), Summary("VC Management Commands")]
+    [Name("VoiceChat"), Summary("VC Management Commands")]
     [Group("vc")]
     [RequireGuild]
     public class VcModule : ModuleBase

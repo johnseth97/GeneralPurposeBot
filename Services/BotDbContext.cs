@@ -13,5 +13,6 @@ namespace GeneralPurposeBot.Services
         {
         }
         public DbSet<ServerProperties> ServerProperties { get; set; }
+        public DbSet<ServerModule> ServerModules { get; set; }
     }
 }
