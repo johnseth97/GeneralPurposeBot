@@ -1,6 +1,7 @@
 stages:
     - build
     - deploy
+    - notification
 variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
@@ -34,3 +35,22 @@ deploy:
         - ssh -o StrictHostKeyChecking=no $DEPLOY_SSH_URI -i $DEPLOY_KEY "docker-direct pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
         - ssh -o StrictHostKeyChecking=no $DEPLOY_SSH_URI -i $DEPLOY_KEY "docker-direct tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA dokku/desobot:$CI_COMMIT_SHA"
         - ssh -o StrictHostKeyChecking=no $DEPLOY_SSH_URI -i $DEPLOY_KEY "tags:deploy desobot $CI_COMMIT_SHA"
+
+success_notification:
+    stage: notification
+    only:
+        - master
+    script:
+        - wget https://raw.githubusercontent.com/DiscordHooks/gitlab-ci-discord-webhook/master/send.sh
+        - chmod +x send.sh
+        - ./send.sh success $WEBHOOK_URL
+    when: on_success
+failure_notification:
+    stage: notification
+    only:
+        - master
+    script:
+        - wget https://raw.githubusercontent.com/DiscordHooks/gitlab-ci-discord-webhook/master/send.sh
+        - chmod +x send.sh
+        - ./send.sh failure $WEBHOOK_URL
+    when: on_failure
