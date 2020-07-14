@@ -6,6 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Collections.Immutable;
 
 namespace GeneralPurposeBot.Services
 {
@@ -16,15 +19,15 @@ namespace GeneralPurposeBot.Services
         public readonly CommandService Commands;
         private readonly DiscordSocketClient _client;
         private readonly IServiceProvider _services;
+        private readonly ServerPropertiesService _spService;
 
-
-        public CommandHandler(IServiceProvider services)
+        public CommandHandler(IServiceProvider services, IConfiguration config, CommandService commandService, DiscordSocketClient client, ServerPropertiesService spService)
         {
-            // juice up the fields with these services
-            // since we passed the services in, we can use GetRequiredService to pass them into the fields set earlier
-            _config = services.GetRequiredService<IConfiguration>();
-            Commands = services.GetRequiredService<CommandService>();
-            _client = services.GetRequiredService<DiscordSocketClient>();
+            // didn't grab these from the service provider because it's usually considered better convention to have them defined in the constructor
+            _config = config;
+            Commands = commandService;
+            _client = client;
+            _spService = spService;
             _services = services;
 
             // take action when we execute a command
@@ -37,7 +40,7 @@ namespace GeneralPurposeBot.Services
         public async Task InitializeAsync()
         {
             // register modules that are public and inherit ModuleBase<T>.
-            await Commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+            await Commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services).ConfigureAwait(false);
         }
 
         // this class is where the magic starts, and takes actions upon receiving messages
@@ -68,10 +71,107 @@ namespace GeneralPurposeBot.Services
 
             var context = new SocketCommandContext(_client, message);
 
-            // execute command if one is found that matches
-            await Commands.ExecuteAsync(context, argPos, _services);
+            // figure out what module the command is in (if any)
+            // command search code based on code from CommandService.ExecuteAsync
+            var searchResult = await CommandSearch(context, argPos).ConfigureAwait(false);
+
+            bool enabled = true;
+            if (context.Guild != null)
+                enabled = _spService.IsModuleEnabled(searchResult.Module, context.Guild.Id);
+            // execute command if one is found that matches and it's in an enabled module
+            if (enabled)
+                await Commands.ExecuteAsync(context, argPos, _services).ConfigureAwait(false);
         }
 
+        // Basically the Discord.Net CommandService's ExecuteAsync method, but without actually running the command.
+        public async Task<CommandInfo> CommandSearch(ICommandContext context, int argPos)
+        {
+
+            var searchResult = Commands.Search(context, argPos);
+            if (!searchResult.IsSuccess)
+            {
+                return null;
+            }
+
+
+            var commands = searchResult.Commands;
+            var preconditionResults = new Dictionary<CommandMatch, PreconditionResult>();
+
+            foreach (var match in commands)
+            {
+                preconditionResults[match] = await match.Command.CheckPreconditionsAsync(context, _services).ConfigureAwait(false);
+            }
+
+            var successfulPreconditions = preconditionResults
+                .Where(x => x.Value.IsSuccess)
+                .ToArray();
+
+            if (successfulPreconditions.Length == 0)
+            {
+                //All preconditions failed, return the one from the highest priority command
+                var bestCandidate = preconditionResults
+                    .OrderByDescending(x => x.Key.Command.Priority)
+                    .FirstOrDefault(x => !x.Value.IsSuccess);
+                return bestCandidate.Key.Command;
+            }
+
+            //If we get this far, at least one precondition was successful.
+
+            var parseResultsDict = new Dictionary<CommandMatch, ParseResult>();
+            foreach (var pair in successfulPreconditions)
+            {
+                var parseResult = await pair.Key.ParseAsync(context, searchResult, pair.Value, _services).ConfigureAwait(false);
+
+                if (parseResult.Error == CommandError.MultipleMatches)
+                {
+                    IReadOnlyList<TypeReaderValue> argList, paramList;
+                    argList = parseResult.ArgValues.Select(x => x.Values.OrderByDescending(y => y.Score).First()).ToImmutableArray();
+                    paramList = parseResult.ParamValues.Select(x => x.Values.OrderByDescending(y => y.Score).First()).ToImmutableArray();
+                    parseResult = ParseResult.FromSuccess(argList, paramList);
+                    break;
+                }
+
+                parseResultsDict[pair.Key] = parseResult;
+            }
+
+            // Calculates the 'score' of a command given a parse result
+            float CalculateScore(CommandMatch match, ParseResult parseResult)
+            {
+                float argValuesScore = 0, paramValuesScore = 0;
+
+                if (match.Command.Parameters.Count > 0)
+                {
+                    var argValuesSum = parseResult.ArgValues?.Sum(x => x.Values.OrderByDescending(y => y.Score).FirstOrDefault().Score) ?? 0;
+                    var paramValuesSum = parseResult.ParamValues?.Sum(x => x.Values.OrderByDescending(y => y.Score).FirstOrDefault().Score) ?? 0;
+
+                    argValuesScore = argValuesSum / match.Command.Parameters.Count;
+                    paramValuesScore = paramValuesSum / match.Command.Parameters.Count;
+                }
+
+                var totalArgsScore = (argValuesScore + paramValuesScore) / 2;
+                return match.Command.Priority + totalArgsScore * 0.99f;
+            }
+
+            //Order the parse results by their score so that we choose the most likely result to execute
+            var parseResults = parseResultsDict
+                .OrderByDescending(x => CalculateScore(x.Key, x.Value));
+
+            var successfulParses = parseResults
+                .Where(x => x.Value.IsSuccess)
+                .ToArray();
+
+            if (successfulParses.Length == 0)
+            {
+                //All parses failed, return the one from the highest priority command, using score as a tie breaker
+                var bestMatch = parseResults
+                    .FirstOrDefault(x => !x.Value.IsSuccess);
+
+                return bestMatch.Key.Command;
+            }
+
+            //If we get this far, at least one parse was successful. Return the most likely overload.
+            return successfulParses[0].Key.Command;
+        }
         public async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
 
