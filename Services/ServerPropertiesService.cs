@@ -15,7 +15,7 @@ namespace GeneralPurposeBot.Services
         {
             DbContext = dbContext;
         }
-
+        public Dictionary<string, string> DisableableServices { get; } = new Dictionary<string, string>();
         public ServerProperties GetProperties(ulong serverId)
         {
             ServerProperties entity;
@@ -40,20 +40,24 @@ namespace GeneralPurposeBot.Services
         }
 
         public bool IsModuleEnabled(ModuleInfo module, ulong id)
+            => IsModuleEnabled(module.GetFullName(), id);
+        public bool IsModuleEnabled(string moduleName, ulong id)
         {
             var matches = DbContext.ServerModules
                 .AsQueryable()
-                .Where(sm => sm.ServerId == id && sm.Name == module.GetFullName());
+                .Where(sm => sm.ServerId == id && sm.Name == moduleName);
             if (matches.Any())
                 return !matches.First().Disabled;
             return true;
         }
 
         public async Task EnableModule(ModuleInfo module, ulong id)
+            => await EnableModule(module.GetFullName(), id).ConfigureAwait(false);
+        public async Task EnableModule(string moduleName, ulong id)
         {
             var matches = DbContext.ServerModules
                 .AsQueryable()
-                .Where(sm => sm.ServerId == id && sm.Name == module.GetFullName());
+                .Where(sm => sm.ServerId == id && sm.Name == moduleName);
             if (matches.Any())
             {
                 var match = matches.First();
@@ -64,18 +68,22 @@ namespace GeneralPurposeBot.Services
                 var match = new ServerModule()
                 {
                     ServerId = id,
-                    Name = module.GetFullName(),
+                    Name = moduleName,
                     Disabled = false
                 };
                 DbContext.ServerModules.Add(match);
             }
             await DbContext.SaveChangesAsync().ConfigureAwait(false);
         }
+
         public async Task DisableModule(ModuleInfo module, ulong id)
+            => await DisableModule(module.GetFullName(), id).ConfigureAwait(false);
+
+        public async Task DisableModule(string moduleName, ulong id)
         {
             var matches = DbContext.ServerModules
                 .AsQueryable()
-                .Where(sm => sm.ServerId == id && sm.Name == module.GetFullName());
+                .Where(sm => sm.ServerId == id && sm.Name == moduleName);
             if (matches.Any())
             {
                 var match = matches.First();
@@ -86,7 +94,7 @@ namespace GeneralPurposeBot.Services
                 var match = new ServerModule()
                 {
                     ServerId = id,
-                    Name = module.GetFullName(),
+                    Name = moduleName,
                     Disabled = true
                 };
                 DbContext.ServerModules.Add(match);

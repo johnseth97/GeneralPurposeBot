@@ -10,28 +10,19 @@ using System;
 
 namespace GeneralPurposeBot.Services
 {
-    public class CuteDetection
+    public class CuteDetection : ServiceEventProxy
     {
-        private readonly DiscordSocketClient _client;
-        private readonly IServiceProvider _services;
-        private readonly CommandService _commands;
-        private readonly IConfiguration _config;
-
-
-        public CuteDetection(IServiceProvider services)
+        public CuteDetection(DiscordSocketClient client, ServerPropertiesService spService)
         {
-            // juice up the fields with these services
-            // since we passed the services in, we can use GetRequiredService to pass them into the fields set earlier
-            _config = services.GetRequiredService<IConfiguration>();
-            _commands = services.GetRequiredService<CommandService>();
-            _client = services.GetRequiredService<DiscordSocketClient>();
-            _services = services;
-
-            // take action when we receive a message (so we can process it, and see if user is cute)
-            _client.MessageReceived += CutieAlert;
-
+            Client = client;
+            SpService = spService;
+        }
+        public void Initialize()
+        {
+            InstallEventListeners(typeof(CuteDetection), "CuteDetection", "Responds when people say 'no u' and 'not cute'");
         }
 
+        [EventListener(Event.MessageReceived)]
         public async Task CutieAlert(SocketMessage message)
         {
             //Checks message author so bot doesn't respond to itself
