@@ -193,6 +193,11 @@ namespace GeneralPurposeBot.Modules
                     embed.Description += $"**{module.GetFullName()}** ({(SpService.IsModuleEnabled(module, Context.Guild.Id) ? "Enabled" : "Disabled")}) - " +
                         $"{module.Summary ?? "No summary for module"}\n";
                 }
+                foreach (var service in SpService.DisableableServices)
+                {
+                    var name = "service." + service.Key;
+                    embed.Description += $"**{name}** ({(SpService.IsModuleEnabled(name, Context.Guild.Id) ? "Enabled" : "Disabled")}) - {service.Value}";
+                }
                 await ReplyAsync(embed: embed.Build()).ConfigureAwait(false);
             }
 
@@ -203,6 +208,19 @@ namespace GeneralPurposeBot.Modules
                     .Where(m => m.GetFullName() == name);
                 if (!matchingModules.Any())
                 {
+                    if (name.Split('.')[0]=="service")
+                    {
+                        if (SpService.DisableableServices.ContainsKey(name.Split('.')[1]))
+                        {
+                            await SpService.DisableModule(name, Context.Guild.Id).ConfigureAwait(false);
+                            await ReplyAsync("Done").ConfigureAwait(false);
+                            return;
+                        } else
+                        {
+                            await ReplyAsync("No services matched the name you gave!").ConfigureAwait(false);
+                            return;
+                        }
+                    }
                     await ReplyAsync("No modules matched the name you gave!").ConfigureAwait(false);
                     return;
                 }
@@ -218,6 +236,20 @@ namespace GeneralPurposeBot.Modules
                     .Where(m => m.GetFullName() == name);
                 if (!matchingModules.Any())
                 {
+                    if (name.Split('.')[0] == "service")
+                    {
+                        if (SpService.DisableableServices.ContainsKey(name.Split('.')[1]))
+                        {
+                            await SpService.EnableModule(name, Context.Guild.Id).ConfigureAwait(false);
+                            await ReplyAsync("Done").ConfigureAwait(false);
+                            return;
+                        }
+                        else
+                        {
+                            await ReplyAsync("No services matched the name you gave!").ConfigureAwait(false);
+                            return;
+                        }
+                    }
                     await ReplyAsync("No modules matched the name you gave!").ConfigureAwait(false);
                     return;
                 }
