@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Update;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Channels;
@@ -173,6 +174,7 @@ namespace GeneralPurposeBot.Modules
         [Name("Module"), Summary("Enable and disable modules")]
         [Group("module"), Alias("modules")]
         [RequireUserPermission(Discord.GuildPermission.Administrator, ErrorMessage = "You must have the Server Administrator permission to use this command")]
+        [CoreModule]
         public class Module : ModuleBase
         {
             public CommandHandler CommandHandler { get; }
@@ -225,6 +227,11 @@ namespace GeneralPurposeBot.Modules
                     return;
                 }
                 var module = matchingModules.First();
+                if (module.Attributes.Any(attr => attr is CoreModuleAttribute))
+                {
+                    await ReplyAsync("Core modules cannot be disabled!").ConfigureAwait(false);
+                    return;
+                }
                 await SpService.DisableModule(module, Context.Guild.Id).ConfigureAwait(false);
                 await ReplyAsync("Done").ConfigureAwait(false);
             }
