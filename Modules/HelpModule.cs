@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace GeneralPurposeBot.Modules
 {
     [Name("Help"), Group("help"), Summary("Gets help on commands.")]
+    [CoreModule]
     public class HelpModule : ModuleBase<SocketCommandContext>
     {
         public CommandHandler CommandHandler { get; set; }
@@ -24,7 +25,6 @@ namespace GeneralPurposeBot.Modules
             foreach (var module in CommandHandler.Commands.Modules)
             {
                 eb.WithDescription(eb.Description + "\n**" + module.Name + "** - " + (module.Summary ?? "No summary for module."));
-
             }
             await Context.Channel.SendMessageAsync("", false, eb.Build());
         }
@@ -43,7 +43,7 @@ namespace GeneralPurposeBot.Modules
                 .WithDescription("To get help on a command, do `help command <commandname>`\n")
                 .WithColor(0, 0, 255);
             var module = matchingModules.First();
-            if (!String.IsNullOrEmpty(module.Remarks))
+            if (!string.IsNullOrEmpty(module.Remarks))
             {
                 eb.WithDescription(module.Remarks + "\n\n" + eb.Description);
             }
