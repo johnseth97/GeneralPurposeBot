@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using GeneralPurposeBot.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -69,6 +70,8 @@ namespace GeneralPurposeBot
                 {
                     options.ClientId = Configuration["DiscordClientId"];
                     options.ClientSecret = Configuration["DiscordClientSecret"];
+                    options.SaveTokens = true;
+                    options.Scope.Add("guilds");
                 });
             services.AddMvc();
         }
@@ -87,6 +90,8 @@ namespace GeneralPurposeBot
             };
             app.UseStaticFiles(staticFileOptions);
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
