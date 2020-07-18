@@ -88,6 +88,8 @@ namespace GeneralPurposeBot
                 ServeUnknownFileTypes = true,
                 FileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory() + "/wwwroot")
             };
+            app.UseStatusCodePages();
+            app.UseDefaultFiles();
             app.UseStaticFiles(staticFileOptions);
             app.UseRouting();
             app.UseAuthentication();
