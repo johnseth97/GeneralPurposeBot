@@ -3,3 +3,7 @@ body {
     min-height: 75rem;
     padding-top: 5rem;
 }
+
+.jumbotron h1 {
+    font-family: 'Raleway', sans-serif;
+}
