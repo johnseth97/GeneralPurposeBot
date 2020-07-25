@@ -38,6 +38,7 @@ deploy:
 
 success_notification:
     stage: notification
+    image: ubuntu:18.04
     only:
         - master
     script:
@@ -46,6 +47,7 @@ success_notification:
     when: on_success
 failure_notification:
     stage: notification
+    image: ubuntu:18.04
     only:
         - master
     script:
