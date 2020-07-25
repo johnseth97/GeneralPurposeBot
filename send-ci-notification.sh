@@ -29,12 +29,6 @@ COMMITTER_NAME="$(git log -1 "$CI_COMMIT_SHA" --pretty="%cN")"
 COMMIT_SUBJECT="$(git log -1 "$CI_COMMIT_SHA" --pretty="%s")"
 COMMIT_MESSAGE="$(git log -1 "$CI_COMMIT_SHA" --pretty="%b")" | sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g'
 
-if [ "$AUTHOR_NAME" == "$COMMITTER_NAME" ]; then
-  CREDITS="$AUTHOR_NAME authored & committed"
-else
-  CREDITS="$AUTHOR_NAME authored & $COMMITTER_NAME committed"
-fi
-
 if [ -z $CI_MERGE_REQUEST_ID ]; then
   URL=""
 else
@@ -48,13 +42,13 @@ WEBHOOK_DATA='{
   "embeds": [ {
     "color": '$EMBED_COLOR',
     "author": {
-      "name": "Pipeline #'"$CI_PIPELINE_IID"' '"$STATUS_MESSAGE"' - '"$CI_PROJECT_PATH_SLUG"'",
+      "name": "Deploy '"$STATUS_MESSAGE"' - Pipeline #'"$CI_PIPELINE_IID"'",
       "url": "'"$CI_PIPELINE_URL"'",
       "icon_url": "https://gitlab.com/favicon.png"
     },
-    "title": "'"$COMMIT_SUBJECT"'",
+    "title": "Changes:",
     "url": "'"$URL"'",
-    "description": "'"${COMMIT_MESSAGE//$'\n'/ }"\\n\\n"$CREDITS"'",
+    "description": "__'"$COMMIT_SUBJECT"'__\n'"${COMMIT_MESSAGE//$'\n'/ }"'",
     "fields": [
       {
         "name": "Commit",
