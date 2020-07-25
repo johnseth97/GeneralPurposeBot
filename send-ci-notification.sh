@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 # From https://github.com/DiscordHooks/gitlab-ci-discord-webhook
 
 if [ -z "$2" ]; then
