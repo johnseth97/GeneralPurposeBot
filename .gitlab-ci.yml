@@ -41,16 +41,14 @@ success_notification:
     only:
         - master
     script:
-        - wget https://raw.githubusercontent.com/DiscordHooks/gitlab-ci-discord-webhook/master/send.sh
-        - chmod +x send.sh
-        - ./send.sh success $WEBHOOK_URL
+        - chmod +x send-ci-notifications.sh
+        - ./send-ci-notification.sh success $WEBHOOK_URL
     when: on_success
 failure_notification:
     stage: notification
     only:
         - master
     script:
-        - wget https://raw.githubusercontent.com/DiscordHooks/gitlab-ci-discord-webhook/master/send.sh
-        - chmod +x send.sh
-        - ./send.sh failure $WEBHOOK_URL
+        - chmod +x send-ci-notifications.sh
+        - ./send-ci-notification.sh failure $WEBHOOK_URL
     when: on_failure
