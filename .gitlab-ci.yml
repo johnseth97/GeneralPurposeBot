@@ -42,6 +42,8 @@ success_notification:
     only:
         - master
     script:
+        - apt-get update
+        - apt-get install -y git curl
         - chmod +x send-ci-notification.sh
         - ./send-ci-notification.sh success $WEBHOOK_URL
     when: on_success
@@ -51,6 +53,8 @@ failure_notification:
     only:
         - master
     script:
+        - apt-get update
+        - apt-get install -y git curl
         - chmod +x send-ci-notification.sh
         - ./send-ci-notification.sh failure $WEBHOOK_URL
     when: on_failure
