@@ -17,9 +17,12 @@ namespace GeneralPurposeBot.Web.Models.Auth
         {
             Authenticated = authResult.Succeeded;
             FailureReason = authResult.Failure?.Message;
-            AvatarUrl = authResult.Principal.FindFirstValue("urn:discord:avatar:url");
-            Username = authResult.Principal.Identity.Name;
-            Discriminator = int.Parse(authResult.Principal.FindFirstValue("urn:discord:user:discriminator"));
+            if (Authenticated)
+            {
+                AvatarUrl = authResult.Principal.FindFirstValue("urn:discord:avatar:url");
+                Username = authResult.Principal.Identity.Name;
+                Discriminator = int.Parse(authResult.Principal.FindFirstValue("urn:discord:user:discriminator"));
+            }
         }
 
         public bool Authenticated { get; set; }
