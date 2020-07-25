@@ -41,7 +41,7 @@ success_notification:
     only:
         - master
     script:
-        - chmod +x send-ci-notifications.sh
+        - chmod +x send-ci-notification.sh
         - ./send-ci-notification.sh success $WEBHOOK_URL
     when: on_success
 failure_notification:
@@ -49,6 +49,6 @@ failure_notification:
     only:
         - master
     script:
-        - chmod +x send-ci-notifications.sh
+        - chmod +x send-ci-notification.sh
         - ./send-ci-notification.sh failure $WEBHOOK_URL
     when: on_failure
