@@ -65,8 +65,8 @@ namespace GeneralPurposeBot.Logging.Providers.EnvironmentVariables
 
         private static string NormalizeKey(string key)
         {
-            return key.Replace("__", ConfigurationPath.KeyDelimiter)
-                .Replace("___", ".");
+            return key.Replace("___", ".")
+                .Replace("__", ConfigurationPath.KeyDelimiter);
         }
 
         private static IEnumerable<DictionaryEntry> AzureEnvToAppEnv(DictionaryEntry entry)
