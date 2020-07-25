@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
 using GeneralPurposeBot.Services;
+using GeneralPurposeBot.Logging.Providers.EnvironmentVariables;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
@@ -23,7 +24,7 @@ namespace GeneralPurposeBot
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration(cfg => cfg.AddJsonFile("appsettings.json", true))
                 .ConfigureAppConfiguration(cfg => cfg.AddJsonFile("config.json", true)) // old config file name
-                .ConfigureAppConfiguration(cfg => cfg.AddEnvironmentVariables())
+                .ConfigureAppConfiguration(cfg => cfg.AddModifiedEnvironmentVariables())
                 .ConfigureAppConfiguration(cfg => cfg.AddCommandLine(args))
                 .ConfigureLogging((host, logger) => logger.AddConfiguration(host.Configuration.GetSection("Logging")))
                 .ConfigureLogging(logger => logger.AddConsole())
