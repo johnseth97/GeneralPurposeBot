@@ -1,7 +1,5 @@
-﻿using Discord.Commands;
 using Discord.WebSocket;
 using GeneralPurposeBot.Services;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;

@@ -38,19 +38,23 @@ deploy:
 
 success_notification:
     stage: notification
+    image: ubuntu:18.04
     only:
         - master
     script:
-        - wget https://raw.githubusercontent.com/DiscordHooks/gitlab-ci-discord-webhook/master/send.sh
-        - chmod +x send.sh
-        - ./send.sh success $WEBHOOK_URL
+        - apt-get update
+        - apt-get install -y git curl
+        - chmod +x send-ci-notification.sh
+        - ./send-ci-notification.sh success $WEBHOOK_URL
     when: on_success
 failure_notification:
     stage: notification
+    image: ubuntu:18.04
     only:
         - master
     script:
-        - wget https://raw.githubusercontent.com/DiscordHooks/gitlab-ci-discord-webhook/master/send.sh
-        - chmod +x send.sh
-        - ./send.sh failure $WEBHOOK_URL
+        - apt-get update
+        - apt-get install -y git curl
+        - chmod +x send-ci-notification.sh
+        - ./send-ci-notification.sh failure $WEBHOOK_URL
     when: on_failure
