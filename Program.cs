@@ -1,17 +1,21 @@
-﻿using Discord.Commands;
 using Discord.WebSocket;
-using GeneralPurposeBot.Services;
 using GeneralPurposeBot.Logging.Providers.EnvironmentVariables;
+using GeneralPurposeBot.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.EventLog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace GeneralPurposeBot
@@ -21,46 +25,49 @@ namespace GeneralPurposeBot
         public static void Main(string[] args)
             => CreateHostBuilder(args).Build().Run();
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration(cfg => cfg.AddJsonFile("appsettings.json", true))
-                .ConfigureAppConfiguration(cfg => cfg.AddJsonFile("config.json", true)) // old config file name
-                .ConfigureAppConfiguration(cfg => cfg.AddModifiedEnvironmentVariables())
-                .ConfigureAppConfiguration(cfg => cfg.AddCommandLine(args))
-                .ConfigureLogging((host, logger) => logger.AddConfiguration(host.Configuration.GetSection("Logging")))
-                .ConfigureLogging(logger => logger.AddConsole())
-                .ConfigureServices(ConfigureServices)
-                .ConfigureServices(services => services.AddHostedService<BotHostedService>());
+            new HostBuilder()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .ConfigureHostConfiguration(cfg => cfg
+                    .AddModifiedEnvironmentVariables("DOTNET_")
+                    .AddCommandLine(args ?? new string[0]))
+                .ConfigureAppConfiguration((host, config) =>
+                {
+                    var env = host.HostingEnvironment;
 
-        private static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
-        {
-            services.AddSingleton<DiscordSocketClient>();
-            services.AddSingleton<CommandService>();
-            services.AddSingleton<CommandHandler>();
-            services.AddSingleton<CuteDetection>();
-            services.AddSingleton<DiscordLogWrapper>();
-            services.AddSingleton<HttpClient>();
-            services.AddSingleton<ServerPropertiesService>();
-            services.AddSingleton<TempVcService>();
-
-            string connStr = null;
-            var connStrs = host.Configuration.GetSection("ConnectionStrings");
-            if (connStrs.GetChildren().Any(item => item.Key == "mysql"))
-            {
-                connStr = connStrs["mysql"];
-            }
-            else if (host.Configuration.GetChildren().Any(item => item.Key == "DATABASE_URL"))
-            {
-                var uri = new Uri(host.Configuration["DATABASE_URL"]);
-                var username = uri.UserInfo.Split(':')[0];
-                var password = uri.UserInfo.Split(':')[1];
-                connStr = $"Host={uri.Host};Database={uri.AbsolutePath.Trim('/')};Username={username};Password={password};Port={uri.Port}";
-            }
-            else
-            {
-                throw new Exception("Database URI not defined");
-            }
-            services.AddDbContext<BotDbContext>(options =>
-                options.UseMySql(connStr), ServiceLifetime.Singleton, ServiceLifetime.Singleton);
-        }
+                    config
+                        .AddJsonFile("appsettings.json", true, true)
+                        .AddJsonFile("appsettings." + env.EnvironmentName + ".json", true, true);
+                    if (env.IsDevelopment() && !string.IsNullOrEmpty(env.ApplicationName))
+                    {
+                        var asm = Assembly.Load(env.ApplicationName);
+                        if (asm != null)
+                            config.AddUserSecrets(asm, true);
+                    }
+                    config
+                        .AddModifiedEnvironmentVariables()
+                        .AddCommandLine(args ?? new string[0]);
+                })
+                .ConfigureLogging((host, logging) =>
+                {
+                    var windows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+                    if (windows)
+                    {
+                        logging.AddFilter<EventLogLoggerProvider>(level => level >= LogLevel.Warning);
+                    }
+                    logging.AddConfiguration(host.Configuration.GetSection("Logging"))
+                        .AddConsole()
+                        .AddDebug()
+                        .AddEventSourceLogger();
+                    if (windows)
+                    {
+                        logging.AddEventLog();
+                    }
+                })
+                .UseDefaultServiceProvider((host, options) =>
+                {
+                    options.ValidateScopes = host.HostingEnvironment.IsDevelopment();
+                    options.ValidateOnBuild = host.HostingEnvironment.IsDevelopment();
+                })
+                .ConfigureWebHostDefaults(builder => builder.UseStartup<Startup>());
     }
 }
