@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using GeneralPurposeBot.Web.Models.Auth;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Discord.WebSocket;
 
 namespace GeneralPurposeBot.Web.Controllers
 {
@@ -14,6 +15,12 @@ namespace GeneralPurposeBot.Web.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        public DiscordSocketClient Client { get; }
+        public AuthController(DiscordSocketClient client)
+        {
+            Client = client;
+        }
+
         [HttpGet("SignIn")]
         public IActionResult SignIn() =>
             Challenge(new AuthenticationProperties { RedirectUri = "/",  }, "Discord");
@@ -28,7 +35,7 @@ namespace GeneralPurposeBot.Web.Controllers
         [HttpGet("whoami")]
         public async Task<Whoami> WhoamiAsync()
         {
-            return new Whoami(await HttpContext.AuthenticateAsync().ConfigureAwait(false));
+            return new Whoami(await HttpContext.AuthenticateAsync().ConfigureAwait(false), Client);
         }
     }
 }
