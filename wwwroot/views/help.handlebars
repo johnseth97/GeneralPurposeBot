@@ -1,0 +1,45 @@
+﻿{{! Command Partials }}
+{{#*inline "command"}}
+    <li class="list-group-item">
+        <h4>{{command.name}}</h4>
+        <p>{{command.description}}</p>
+        <p>Usage: {{command.aliases.[0]}} {{command.usage}}</p>
+        <p>Aliases: {{#each command.aliases}}{{.}}{{#unless @last}}, {{/unless}}{{/each}}</p>
+    </li>
+{{/inline}}
+{{#*inline "command-list"}}
+    <ul class="list-group">
+        {{#each commands}}
+            {{>command command=.}}
+        {{/each}}
+    </ul>
+{{/inline}}
+
+{{! Module Partials }}
+{{#*inline "module"}}
+    <li class="list-group-item">
+        <h4 class="media-heading">{{module.name}}</h4>
+        <p>{{module.description}}</p>
+        {{#if module.commands}}
+            <h5>Commands</h5>
+            {{>command-list commands=module.commands}}
+        {{/if}}
+        {{#if module.submodules}}
+            <h5>Submodules</h5>
+            {{>module-list modules=module.submodules}}
+        {{/if}}
+    </li>
+{{/inline}}
+{{#*inline "module-list"}}
+    <ul class="list-group">
+        {{#each modules}}
+            {{>module module=.}}
+        {{/each}}
+    </ul>
+{{/inline}}
+
+{{! Body }}
+<div class="jumbotron container">
+    <h1>Bot Help</h1>
+    {{>module-list modules=modules}}
+</div>
