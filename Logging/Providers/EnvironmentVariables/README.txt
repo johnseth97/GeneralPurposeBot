@@ -1,0 +1,1 @@
+﻿This is literally a copy/paste of the official env vars config provider, but modified to replace three underscores with a dot.
