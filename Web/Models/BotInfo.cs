@@ -12,7 +12,7 @@ namespace GeneralPurposeBot.Web.Models
         {
             Name = app.Name;
             Description = app.Description;
-            ClientId = app.Id;
+            ClientId = app.Id.ToString();
         }
         public string Name { get; }
         public string Description { get; }
@@ -21,6 +21,6 @@ namespace GeneralPurposeBot.Web.Models
 #else
         public bool Testing { get; } = false;
 #endif
-        public ulong ClientId { get; }
+        public string ClientId { get; }
     }
 }
