@@ -26,7 +26,7 @@ namespace GeneralPurposeBot.Web.Models.Auth
                 var discriminator = authResult.Principal.FindFirstValue("urn:discord:user:discriminator");
                 Discriminator = int.Parse(discriminator);
                 var user = client.GetUser(Username, discriminator);
-                if (user.MutualGuilds?.Any() == true)
+                if (user?.MutualGuilds?.Any() == true)
                 {
                     Guilds = user.MutualGuilds.Select(g => {
                         var guildUser = g.GetUser(user.Id);
