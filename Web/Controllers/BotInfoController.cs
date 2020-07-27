@@ -2,6 +2,7 @@
 using Discord.WebSocket;
 using GeneralPurposeBot.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace GeneralPurposeBot.Web.Controllers
     public class BotInfoController : ControllerBase
     {
         public DiscordSocketClient Client { get; }
+
         public BotInfoController(DiscordSocketClient client)
         {
             Client = client;
@@ -24,7 +26,6 @@ namespace GeneralPurposeBot.Web.Controllers
         {
             var info = await Client.GetApplicationInfoAsync().ConfigureAwait(false);
             return new BotInfo(info);
-
         }
     }
 }
