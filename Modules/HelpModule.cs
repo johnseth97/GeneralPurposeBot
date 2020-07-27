@@ -77,7 +77,6 @@ namespace GeneralPurposeBot.Modules
             var usage = "**" + joinedCommandName + "** ";
             foreach (var parameter in command.Parameters)
             {
-
                 usage += parameter.IsOptional ? "[" : "<";
                 usage += parameter.Type.Name;
                 usage += " ";
