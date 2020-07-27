@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 
@@ -74,6 +76,14 @@ namespace GeneralPurposeBot
                     options.Scope.Add("guilds");
                 });
             services.AddMvc();
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("172.16.0.0"), 12));
+                options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("10.0.0.0"), 8));
+                options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("192.168.0.0"), 16));
+                options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("127.0.0.0"), 8));
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -88,6 +98,7 @@ namespace GeneralPurposeBot
                 ServeUnknownFileTypes = true,
                 FileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory() + "/wwwroot")
             };
+            app.UseForwardedHeaders();
             app.UseStatusCodePages();
             app.UseDefaultFiles();
             app.UseStaticFiles(staticFileOptions);
