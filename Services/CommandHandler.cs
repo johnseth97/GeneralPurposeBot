@@ -68,7 +68,6 @@ namespace GeneralPurposeBot.Services
             {
                 return;
             }
-
             var context = new SocketCommandContext(_client, message);
 
             // figure out what module the command is in (if any)
