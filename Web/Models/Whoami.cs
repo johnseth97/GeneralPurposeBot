@@ -26,17 +26,20 @@ namespace GeneralPurposeBot.Web.Models.Auth
                 var discriminator = authResult.Principal.FindFirstValue("urn:discord:user:discriminator");
                 Discriminator = int.Parse(discriminator);
                 var user = client.GetUser(Username, discriminator);
-                Guilds = user.MutualGuilds.Select(g => {
-                    var guildUser = g.GetUser(user.Id);
-                    var channels = g.TextChannels
-                        .Where(c =>
-                        {
-                            var perms = guildUser.GetPermissions(c);
-                            return perms.ViewChannel && perms.SendMessages;
-                        })
-                        .Select(c => new Channel(c));
-                    return new Guild(g, channels);
-                });
+                if (user.MutualGuilds?.Any() == true)
+                {
+                    Guilds = user.MutualGuilds.Select(g => {
+                        var guildUser = g.GetUser(user.Id);
+                        var channels = g.TextChannels
+                            .Where(c =>
+                            {
+                                var perms = guildUser.GetPermissions(c);
+                                return perms.ViewChannel && perms.SendMessages;
+                            })
+                            .Select(c => new Channel(c));
+                        return new Guild(g, channels);
+                    });
+                }
             }
         }
 
