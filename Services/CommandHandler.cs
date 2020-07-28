@@ -201,7 +201,7 @@ namespace GeneralPurposeBot.Services
                         await context.Channel.SendMessageAsync("Not enough arguments for this command!").ConfigureAwait(false);
                         break;
                     case CommandError.ObjectNotFound:
-                        await context.Channel.SendMessageAsync("Internal error while getting command arguments!").ConfigureAwait(false);
+                        await context.Channel.SendMessageAsync($"Internal error while getting command arguments - {result.ErrorReason}").ConfigureAwait(false);
                         logChannel = _client.GetChannel(ulong.Parse(_config["errorLogChannel"])) as ITextChannel;
                         await logChannel.SendMessageAsync($"Error while executing `{command.Value.Name}` for {context.Message.Author}: {resultStr}\n```{result.ErrorReason}```").ConfigureAwait(false);
                         break;
