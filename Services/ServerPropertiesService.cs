@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using GeneralPurposeBot.Models;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,12 @@ namespace GeneralPurposeBot.Services
     public class ServerPropertiesService
     {
         private BotDbContext DbContext { get; }
-        public ServerPropertiesService(BotDbContext dbContext)
+        public IConfiguration Config { get; }
+
+        public ServerPropertiesService(BotDbContext dbContext, IConfiguration config)
         {
             DbContext = dbContext;
+            Config = config;
         }
         public Dictionary<string, string> DisableableServices { get; } = new Dictionary<string, string>();
         public ServerProperties GetProperties(ulong serverId)
@@ -24,7 +28,8 @@ namespace GeneralPurposeBot.Services
             {
                 entity = new ServerProperties()
                 {
-                    ServerId = serverId
+                    ServerId = serverId,
+                    Prefix = Config["prefix"]
                 };
                 entity = DbContext.ServerProperties.Add(entity).Entity;
                 DbContext.SaveChanges();
