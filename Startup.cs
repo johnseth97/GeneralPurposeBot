@@ -91,6 +91,10 @@ namespace GeneralPurposeBot
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            } else
+            {
+                // Auto-migrate in production
+                app.ApplicationServices.GetService<BotDbContext>().Database.Migrate();
             }
 
             var staticFileOptions = new StaticFileOptions()
