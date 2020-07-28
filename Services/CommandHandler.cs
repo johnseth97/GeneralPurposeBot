@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections.Immutable;
+using GeneralPurposeBot.Web.Models;
 
 namespace GeneralPurposeBot.Services
 {
@@ -60,11 +61,20 @@ namespace GeneralPurposeBot.Services
             // sets the argument position away from the prefix we set
             var argPos = 0;
 
-            // get prefix from the configuration file
-            char prefix = Char.Parse(_config["Prefix"]);
+            // get prefix from the database (if we can)
+            string prefix;
+            if (message.Channel is IGuildChannel guildChannel)
+            {
+                var props = _spService.GetProperties(guildChannel.GuildId);
+                prefix = props.Prefix ?? _config["Prefix"];
+            }
+            else
+            {
+                prefix = _config["Prefix"];
+            }
 
             // determine if the message has a valid prefix, and adjust argPos based on prefix
-            if (!(message.HasMentionPrefix(_client.CurrentUser, ref argPos) || message.HasCharPrefix(prefix, ref argPos)))
+            if (!(message.HasMentionPrefix(_client.CurrentUser, ref argPos) || message.HasStringPrefix(prefix, ref argPos)))
             {
                 return;
             }
@@ -85,13 +95,11 @@ namespace GeneralPurposeBot.Services
         // Basically the Discord.Net CommandService's ExecuteAsync method, but without actually running the command.
         public async Task<CommandInfo> CommandSearch(ICommandContext context, int argPos)
         {
-
             var searchResult = Commands.Search(context, argPos);
             if (!searchResult.IsSuccess)
             {
                 return null;
             }
-
 
             var commands = searchResult.Commands;
             var preconditionResults = new Dictionary<CommandMatch, PreconditionResult>();
