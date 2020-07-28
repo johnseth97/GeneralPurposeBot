@@ -50,6 +50,7 @@ namespace GeneralPurposeBot.Modules
             eb.AddField("Temporary Voice Channel Category", tempCategory?.Name ?? "None");
             eb.AddField("Temporary Voice Creation Channel", tempChannel?.Name ?? "None");
             eb.AddField("Simple Temp VCs", props.SimpleTempVc ? "Enabled" : "Disabled");
+            eb.AddField("Prefix", !string.IsNullOrEmpty(props.Prefix) ? $"`{props.Prefix}`" : "(Default global prefix - see `sp prefix`)");
             await ReplyAsync("", false, eb.Build()).ConfigureAwait(false);
         }
 
@@ -169,6 +170,26 @@ namespace GeneralPurposeBot.Modules
             props.SimpleTempVc = enabled.Value;
             SpService.UpdateProperties(props);
             await ReplyAsync($"Simple VCs are now **{(enabled.Value ? "enabled" : "disabled")}** on this server").ConfigureAwait(false);
+        }
+
+        [Command("prefix"), Summary("Sets the prefix used in this server")]
+        public async Task Prefix(string prefix = null)
+        {
+            var props = SpService.GetProperties(Context.Guild.Id);
+            if (prefix == null)
+            {
+                if (string.IsNullOrEmpty(props.Prefix))
+                {
+                    await ReplyAsync("This server has no prefix set, and it will change with the global default prefix. " +
+                        "This only happens if the bot was in your server before per-server prefexes were added.").ConfigureAwait(false);
+                    return;
+                }
+                await ReplyAsync($"The prefix in this server is currently `{props.Prefix}`.").ConfigureAwait(false);
+                return;
+            }
+            props.Prefix = prefix;
+            SpService.UpdateProperties(props);
+            await ReplyAsync($"Set the prefix in this server to `{props.Prefix}`.").ConfigureAwait(false);
         }
 
         [Name("Module"), Summary("Enable and disable modules")]
