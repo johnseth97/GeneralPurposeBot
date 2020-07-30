@@ -6,7 +6,6 @@ namespace GeneralPurposeBot.Modules
 {
     public class GithubSource : ModuleBase
     {
-        [RequireNsfw]
         [Command("source"), Summary("Sends bot's github repo")]
         public async Task GetSource()
         {

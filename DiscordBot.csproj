@@ -31,4 +31,9 @@
   <ItemGroup>
     <EmbeddedResource Include="wwwroot/*" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="words.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
