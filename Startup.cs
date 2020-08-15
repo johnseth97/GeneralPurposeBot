@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.SpaServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using VueCliMiddleware;
 
 namespace GeneralPurposeBot
 {
@@ -84,6 +86,10 @@ namespace GeneralPurposeBot
                 options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("192.168.0.0"), 16));
                 options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("127.0.0.0"), 8));
             });
+            services.AddSpaStaticFiles(config =>
+            {
+                config.RootPath = "desobot-web/dist";
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -97,21 +103,28 @@ namespace GeneralPurposeBot
                 app.ApplicationServices.GetService<BotDbContext>().Database.Migrate();
             }
 
-            var staticFileOptions = new StaticFileOptions()
-            {
-                ServeUnknownFileTypes = true,
-                FileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory() + "/wwwroot")
-            };
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
             app.UseForwardedHeaders();
             app.UseStatusCodePages();
-            app.UseDefaultFiles();
-            app.UseStaticFiles(staticFileOptions);
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
+                if (env.IsDevelopment())
+                {
+                    endpoints.MapToVueCliProxy(
+                        "{*path}",
+                        new SpaOptions() { SourcePath = "desobot-web" },
+                        npmScript: "serve",
+                        regex: "Compiled successfully");
+                }
                 endpoints.MapControllers();
+            });
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "desobot-web";
             });
         }
     }
