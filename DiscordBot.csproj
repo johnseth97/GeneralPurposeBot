@@ -8,6 +8,7 @@
     <AssemblyName>GeneralPurposeBot</AssemblyName>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <UserSecretsId>c08ddf86-3903-43b9-9a74-f4a516bd4151</UserSecretsId>
+    <ClientRoot>desobot-web</ClientRoot>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AspNet.Security.OAuth.Discord" Version="3.1.2" />
@@ -27,13 +28,43 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.6" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Design" Version="1.1.2" />
+    <PackageReference Include="VueCliMiddleware" Version="3.1.1" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="wwwroot/*" />
-  </ItemGroup>
+  
   <ItemGroup>
     <None Update="words.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  
+  <ItemGroup>
+    <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Content Remove="$(ClientRoot)\**" />
+    <None Include="$(ClientRoot)\**" Exclude="$(ClientRoot)node_modules\**" />
+  </ItemGroup>
+
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(ClientRoot)node_modules') ">
+    <!-- Ensure Node.js is installed -->
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(ClientRoot)" Command="npm install" />
+  </Target>
+  
+  <Target Name="PublishRunWebpack" AfterTargets="Build">
+    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+    <Exec WorkingDirectory="$(ClientRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(ClientRoot)" Command="npm run build" />
+
+    <!-- Include the newly-built files in the publish output -->
+    <ItemGroup>
+      <DistFiles Include="$(ClientRoot)\dist\**" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
 </Project>
