@@ -1,5 +1,5 @@
 <template>
-    <v-app id="inspire">
+    <v-app id="desobot">
         <v-navigation-drawer v-model="drawer"
                              app
                              clipped>
@@ -28,7 +28,26 @@
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title>DesoBot</v-toolbar-title>
             <v-spacer/>
-            
+            <v-btn v-if="!$store.state.auth.authenticated" href="/api/auth/signin" color="primary">Log in with Discord</v-btn>
+            <v-menu v-else :offset-y="true">
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn text dark v-bind="attrs" v-on="on">
+                        Logged in as
+                        {{$store.state.auth.username}}#{{$store.state.auth.discriminator}}
+                        <v-icon>mdi-menu-down</v-icon>
+                    </v-btn>
+                </template>
+                <v-card>
+                    <v-img class="white--text align-end"
+                           :src="$store.state.auth.avatarUrl">
+                        <v-card-title>{{$store.state.auth.username}}#{{$store.state.auth.discriminator}}</v-card-title>
+                    </v-img>
+                    <v-card-actions>
+                        <v-spacer/>
+                        <v-btn color="red" text href="/api/auth/signout">Log Out</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-menu>
         </v-app-bar>
 
         <router-view></router-view>
