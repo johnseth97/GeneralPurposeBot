@@ -47,7 +47,7 @@ namespace GeneralPurposeBot.Modules
             embed.Description = sb.ToString();
 
             // this will reply with the embed
-            await ReplyAsync(null, false, embed.Build());
+            await ReplyAsync(null, false, embed.Build()).ConfigureAwait(false);
         }
     }
 }

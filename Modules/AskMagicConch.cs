@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Text;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GeneralPurposeBot.Modules
 {
@@ -21,13 +22,12 @@ namespace GeneralPurposeBot.Modules
             var embed = new EmbedBuilder();
 
             // now to create a list of possible replies
-            var replies = new List<string>
+            var replies = new Dictionary<string, Color>
             {
-                // add our possible replies
-                "yes",
-                "no",
-                "maybe",
-                "hazzzzy...."
+                { "yes", new Color(0, 255, 0) },
+                { "no", new Color(255, 0, 0) },
+                { "maybe", new Color(255, 255, 0) },
+                { "hazzzzy....", new Color(255, 0, 255) }
             };
 
             // time to add some options to the embed (like color and title)
@@ -49,37 +49,11 @@ namespace GeneralPurposeBot.Modules
             {
                 // if we have a question, let's give an answer!
                 // get a random number to index our list with (arrays start at zero so we subtract 1 from the count)
-                var answer = replies[new Random().Next(replies.Count - 1)];
-
-                // build out our reply with the handy StringBuilder
+                var answer = replies.ElementAt(new Random().Next(replies.Count - 1));
                 sb.Append("You asked: [**").Append(question).AppendLine("**]...");
                 sb.AppendLine();
-                sb.Append("...your answer is [**").Append(answer).AppendLine("**]");
-
-                // bonus - let's switch out the reply and change the color based on it
-                switch (answer)
-                {
-                    case "yes":
-                        {
-                            embed.WithColor(new Color(0, 255, 0));
-                            break;
-                        }
-                    case "no":
-                        {
-                            embed.WithColor(new Color(255, 0, 0));
-                            break;
-                        }
-                    case "maybe":
-                        {
-                            embed.WithColor(new Color(255, 255, 0));
-                            break;
-                        }
-                    case "hazzzzy....":
-                        {
-                            embed.WithColor(new Color(255, 0, 255));
-                            break;
-                        }
-                }
+                sb.Append("...your answer is [**").Append(answer.Key).AppendLine("**]");
+                embed.WithColor(answer.Value);
             }
 
             // now we can assign the description of the embed to the contents of the StringBuilder we created

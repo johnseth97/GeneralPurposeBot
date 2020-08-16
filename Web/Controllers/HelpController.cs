@@ -52,7 +52,7 @@ namespace GeneralPurposeBot.Controllers
                     Remarks = m.Remarks,
                     Commands = m.Commands.Select(c => new Command(c)),
                     Submodules = GetServerModules(m.Submodules, serverId)
-                });;
+                });
         }
 
         [HttpGet("{server}")]

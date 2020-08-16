@@ -14,7 +14,7 @@ namespace GeneralPurposeBot.Modules
         {
             var random = new Random();
             var number = random.Next(1, 7);
-            await Context.Channel.SendMessageAsync("Your 6 sided 🎲 rolled a " + number + "!").ConfigureAwait(false);
+            await ReplyAsync("Your 6 sided 🎲 rolled a " + number + "!").ConfigureAwait(false);
         }
     }
 }

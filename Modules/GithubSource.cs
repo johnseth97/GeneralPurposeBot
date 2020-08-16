@@ -9,7 +9,7 @@ namespace GeneralPurposeBot.Modules
         [Command("source")]
         public async Task GetSource()
         {
-            await ReplyAsync("My source code is available https://github.com/EthanJohnson97/GeneralPurposeBot/").ConfigureAwait(false);
+            await ReplyAsync("My source code is available at https://github.com/EthanJohnson97/GeneralPurposeBot/").ConfigureAwait(false);
         }
     }
 }

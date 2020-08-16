@@ -26,7 +26,7 @@ namespace GeneralPurposeBot.Modules
             {
                 eb.WithDescription(eb.Description + "\n**" + module.Name + "** - " + (module.Summary ?? "No summary for module."));
             }
-            await Context.Channel.SendMessageAsync("", false, eb.Build());
+            await Context.Channel.SendMessageAsync("", false, eb.Build()).ConfigureAwait(false);
         }
 
         [Command("module"), Summary("List commands in a module")]
@@ -35,7 +35,7 @@ namespace GeneralPurposeBot.Modules
             var matchingModules = CommandHandler.Commands.Modules.Where(m => string.Equals(m.Name, moduleName, StringComparison.OrdinalIgnoreCase));
             if (!matchingModules.Any())
             {
-                await Context.Channel.SendMessageAsync("No modules with that name found!");
+                await Context.Channel.SendMessageAsync("No modules with that name found!").ConfigureAwait(false);
                 return;
             }
             var eb = new EmbedBuilder()
@@ -51,7 +51,7 @@ namespace GeneralPurposeBot.Modules
             {
                 eb.WithDescription(eb.Description + "\n**" + command.Aliases[0] + "** - " + (command.Summary ?? "No summary for command."));
             }
-            await Context.Channel.SendMessageAsync("", false, eb.Build());
+            await Context.Channel.SendMessageAsync("", false, eb.Build()).ConfigureAwait(false);
         }
 
         [Command("command"), Summary("Get help on a specific command.")]
@@ -61,12 +61,12 @@ namespace GeneralPurposeBot.Modules
             var matchingCommands = CommandHandler.Commands.Commands.Where(c => c.Aliases[0] == joinedCommandName);
             if (!matchingCommands.Any())
             {
-                await Context.Channel.SendMessageAsync("No commands with that name were found in that module!");
+                await Context.Channel.SendMessageAsync("No commands with that name were found in that module!").ConfigureAwait(false);
                 return;
             }
             if (matchingCommands.Count() > 1)
             {
-                await Context.Channel.SendMessageAsync("Somehow, multiple commands matched that! Poke a bot developer.");
+                await Context.Channel.SendMessageAsync("Somehow, multiple commands matched that! Poke a bot developer.").ConfigureAwait(false);
                 return;
             }
             var command = matchingCommands.First();
@@ -85,7 +85,7 @@ namespace GeneralPurposeBot.Modules
                 usage += parameter.IsOptional ? "] " : "> ";
             }
             eb.AddField("Usage", usage);
-            await Context.Channel.SendMessageAsync("", false, eb.Build());
+            await Context.Channel.SendMessageAsync("", false, eb.Build()).ConfigureAwait(false);
         }
     }
 }

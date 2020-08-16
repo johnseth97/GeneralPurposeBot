@@ -45,7 +45,7 @@ namespace DiscordBot.Modules
             }
             catch (Exception)
             {
-                await Context.Channel.SendMessageAsync("Color was not known!").ConfigureAwait(false);
+                await ReplyAsync("Color was not known!").ConfigureAwait(false);
                 return;
             }
 
@@ -72,7 +72,7 @@ namespace DiscordBot.Modules
             await user.RemoveRolesAsync(roles).ConfigureAwait(false);
             // add new color role to user
             await user.AddRoleAsync(role).ConfigureAwait(false);
-            await Context.Channel.SendMessageAsync($"{user.Mention} now has the **{roleName}** role.").ConfigureAwait(false);
+            await ReplyAsync($"{user.Mention} now has the **{roleName}** role.").ConfigureAwait(false);
         }
 
         [Command("remove")]
@@ -95,7 +95,7 @@ namespace DiscordBot.Modules
                 .Select(id => Context.Guild.GetRole(id)) // Convert each role ID the user has into a role object
                 .Where(role => role.Name.StartsWith("color-")); // Find the ones starting with "color"
             await user.RemoveRolesAsync(roles).ConfigureAwait(false);
-            await Context.Channel.SendMessageAsync($"Removed all color roles from {user.Mention}").ConfigureAwait(false);
+            await ReplyAsync($"Removed all color roles from {user.Mention}").ConfigureAwait(false);
         }
     }
 }
