@@ -41,11 +41,12 @@ namespace GeneralPurposeBot.Controllers
             if (modules == null) return null;
 
             // we only want top-level modules in the base list
-            return modules.Where(m => m.Parent == null)
-                // only keep enabled top-level modules
-                .Where(m => SpService.IsModuleEnabled(m.GetFullName(), serverId))
-                // convert to API module objects
-                .Select(m => new Module()
+            modules = modules.Where(m => m.Parent == null);
+            modules = modules.Where(m => 
+                SpService.IsModuleEnabled(m.GetFullName(), serverId));
+
+            // convert to API module objects
+            return modules.Select(m => new Module()
                 {
                     Name = m.Name,
                     Description = m.Summary,
