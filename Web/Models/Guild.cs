@@ -11,12 +11,12 @@ namespace GeneralPurposeBot.Web.Models
     {
         public Guild(SocketGuild guild, IEnumerable<Channel> channels)
         {
-            Id = guild.Id;
+            Id = guild.Id.ToString();
             Name = guild.Name;
             Channels = channels;
         }
 
-        public ulong Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public IEnumerable<Channel> Channels { get; set; }
     }
