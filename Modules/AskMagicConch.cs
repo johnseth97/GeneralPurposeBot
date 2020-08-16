@@ -8,11 +8,12 @@ using System.Collections.Generic;
 
 namespace GeneralPurposeBot.Modules
 {
+    [Summary("Ask the magic conch a question")]
     public class AskMagicConch : ModuleBase
     {
-        [Command("MagicConch"), Summary("!MagicConch <question>")]
+        [Command("MagicConch")]
         [Alias("ask")]
-        public async Task MagicConch([Remainder]string args = null)
+        public async Task MagicConch([Remainder]string question = null)
         {
             // I like using StringBuilder to build out the reply
             var sb = new StringBuilder();
@@ -20,13 +21,14 @@ namespace GeneralPurposeBot.Modules
             var embed = new EmbedBuilder();
 
             // now to create a list of possible replies
-            var replies = new List<string>();
-
-            // add our possible replies
-            replies.Add("yes");
-            replies.Add("no");
-            replies.Add("maybe");
-            replies.Add("hazzzzy....");
+            var replies = new List<string>
+            {
+                // add our possible replies
+                "yes",
+                "no",
+                "maybe",
+                "hazzzzy...."
+            };
 
             // time to add some options to the embed (like color and title)
             embed.WithColor(new Color(0, 255, 0));
@@ -34,11 +36,11 @@ namespace GeneralPurposeBot.Modules
 
             // we can get lots of information from the Context that is passed into the commands
             // here I'm setting up the preface with the user's name and a comma
-            sb.AppendLine($"{Context.Message.Author.Mention},");
+            sb.Append(Context.Message.Author.Mention).AppendLine(",");
             sb.AppendLine();
 
             // let's make sure the supplied question isn't null
-            if (args == null)
+            if (question == null)
             {
                 // if no question is asked (args are null), reply with the below text
                 sb.AppendLine("Sorry, can't answer a question you didn't ask!");
@@ -50,9 +52,9 @@ namespace GeneralPurposeBot.Modules
                 var answer = replies[new Random().Next(replies.Count - 1)];
 
                 // build out our reply with the handy StringBuilder
-                sb.AppendLine($"You asked: [**{args}**]...");
+                sb.Append("You asked: [**").Append(question).AppendLine("**]...");
                 sb.AppendLine();
-                sb.AppendLine($"...your answer is [**{answer}**]");
+                sb.Append("...your answer is [**").Append(answer).AppendLine("**]");
 
                 // bonus - let's switch out the reply and change the color based on it
                 switch (answer)
@@ -84,7 +86,7 @@ namespace GeneralPurposeBot.Modules
             embed.Description = sb.ToString();
 
             // this will reply with the embed
-            await ReplyAsync(null, false, embed.Build());
+            await ReplyAsync(null, false, embed.Build()).ConfigureAwait(false);
         }
     }
 }

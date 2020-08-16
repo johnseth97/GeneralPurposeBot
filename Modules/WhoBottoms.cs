@@ -9,10 +9,11 @@ using System;
 
 namespace GeneralPurposeBot.Modules
 {
+    [Summary("Decides the bottom.")]
     public class WhoBottoms : ModuleBase
     {
         [RequireNsfw]
-        [Command("whobottoms"), Summary("Decides The Bottom. Usage: !whobottoms <@otherUser>")]
+        [Command("whobottoms")]
         public async Task BottomDecider(SocketUser user)
         {
             // I like using StringBuilder to build out the reply
@@ -32,22 +33,22 @@ namespace GeneralPurposeBot.Modules
 
             if (number == 1)
             {
-                sb.AppendLine($"{Context.Message.Author.Mention} Bottoms! 🍑");
+                sb.Append(Context.Message.Author.Mention).AppendLine(" Bottoms! 🍑");
                 sb.AppendLine();
-                sb.AppendLine($"{user.Mention} Tops! 🍆");
+                sb.Append(user.Mention).AppendLine(" Tops! 🍆");
             }
 
             if (number == 2)
             {
-                sb.AppendLine($"{user.Mention} Bottoms! 🍑");
+                sb.Append(user.Mention).AppendLine(" Bottoms! 🍑");
                 sb.AppendLine();
-                sb.AppendLine($"{Context.Message.Author.Mention} Tops! 🍆");
+                sb.Append(Context.Message.Author.Mention).AppendLine(" Tops! 🍆");
             }
             // now we can assign the description of the embed to the contents of the StringBuilder we created
             embed.Description = sb.ToString();
 
             // this will reply with the embed
-            await ReplyAsync(null, false, embed.Build());
+            await ReplyAsync(null, false, embed.Build()).ConfigureAwait(false);
         }
     }
 }

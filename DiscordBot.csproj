@@ -6,7 +6,6 @@
     <StartupObject>GeneralPurposeBot.Program</StartupObject>
     <RootNamespace>GeneralPurposeBot</RootNamespace>
     <AssemblyName>GeneralPurposeBot</AssemblyName>
-    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <UserSecretsId>c08ddf86-3903-43b9-9a74-f4a516bd4151</UserSecretsId>
     <ClientRoot>desobot-web</ClientRoot>
   </PropertyGroup>

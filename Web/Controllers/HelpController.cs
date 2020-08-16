@@ -25,7 +25,6 @@ namespace GeneralPurposeBot.Controllers
             SpService = spService;
         }
 
-
         [HttpGet]
         public List<Module> GlobalHelp()
         {
@@ -42,17 +41,18 @@ namespace GeneralPurposeBot.Controllers
 
             // we only want top-level modules in the base list
             modules = modules.Where(m => m.Parent == null);
-            modules = modules.Where(m => 
+            modules = modules.Where(m =>
                 SpService.IsModuleEnabled(m.GetFullName(), serverId));
 
             // convert to API module objects
             return modules.Select(m => new Module()
                 {
                     Name = m.Name,
-                    Description = m.Summary,
+                    Summary = m.Summary,
+                    Remarks = m.Remarks,
                     Commands = m.Commands.Select(c => new Command(c)),
                     Submodules = GetServerModules(m.Submodules, serverId)
-                });
+                });;
         }
 
         [HttpGet("{server}")]

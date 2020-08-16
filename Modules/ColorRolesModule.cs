@@ -11,7 +11,8 @@ using System.Threading.Tasks;
 
 namespace DiscordBot.Modules
 {
-    [Group("color"), Summary("!color set <colorName> or !color set <hex-code> to set your color, !color remove to remove your colors")]
+    [Group("Color"), Summary("Manages color roles")]
+    [Remarks("!color set <colorName> or !color set <hexCode>. !color remove to remove your color role.")]
     [RequireBotPermission(Discord.GuildPermission.ManageRoles, ErrorMessage = "The bot must be able to manage roles on the server to set user colors.", NotAGuildErrorMessage = "This must be run inside of a server.")]
     public class ColorRolesModule : ModuleBase
     {
@@ -60,9 +61,8 @@ namespace DiscordBot.Modules
             }
             else // create if if not
             {
-                role = await Context.Guild.CreateRoleAsync(roleName, GuildPermissions.None, discordColor, false, null);
+                role = await Context.Guild.CreateRoleAsync(roleName, GuildPermissions.None, discordColor, false, null).ConfigureAwait(false);
                 await role.ModifyAsync(r => r.Position = 2).ConfigureAwait(false);
-
             }
 
             // remove any existing color roles from the user

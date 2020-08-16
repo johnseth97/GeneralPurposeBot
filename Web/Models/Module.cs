@@ -11,13 +11,13 @@ namespace GeneralPurposeBot.Web.Models.Auth
     {
         public Module()
         {
-
         }
 
         public Module(ModuleInfo module)
         {
             Name = module.Name;
-            Description = module.Summary;
+            Summary = module.Summary;
+            Remarks = module.Remarks;
             if (module.Submodules.Count > 0)
             {
                 var submodules = new List<Module>();
@@ -34,7 +34,8 @@ namespace GeneralPurposeBot.Web.Models.Auth
         }
 
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string Summary { get; set; }
+        public string Remarks { get; set; }
         public IEnumerable<Module> Submodules { get; set; }
         public IEnumerable<Command> Commands { get; set; }
     }

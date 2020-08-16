@@ -3,9 +3,10 @@
         <v-expansion-panel-header>
             <b>{{module.name}}</b>
             <v-spacer />
-            {{module.description}}
+            {{module.summary}}
         </v-expansion-panel-header>
         <v-expansion-panel-content>
+            <p v-if="module.remarks != null">{{module.remarks}}</p>
             <div v-if="module.submodules != null">
                 <h3>Submodules</h3>
                 <v-expansion-panels>

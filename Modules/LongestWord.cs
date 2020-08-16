@@ -8,11 +8,12 @@ using System.Collections.Generic;
 
 namespace GeneralPurposeBot.Modules
 {
+    [Summary("Gets the longest word in the english language that doesn't contain the letters specified")]
     public class LongestWord : ModuleBase
     {
-        [Command("LongestWordWithout"), Summary("!lww: Gets the longest word in the english language that doesn't contain the letters specified")]
+        [Command("LongestWordWithout")]
         [Alias("lww")]
-        public async Task lww([Remainder] string args = null)
+        public async Task LongestWordWithout([Remainder] string args = null)
         {
             // I like using StringBuilder to build out the reply
             var sb = new StringBuilder();
@@ -26,19 +27,21 @@ namespace GeneralPurposeBot.Modules
             foreach (var testWord in words)
             {
                 if (testWord.ToLower().IndexOfAny(args.ToLower().ToCharArray()) >= 0)
+                {
                     continue;
-
+                }
                 else if (testWord.Length >= longestAcceptableWord.Length)
+                {
                     longestAcceptableWord = testWord;
+                }
             }
 
             embed.WithColor(new Color(0, 255, 0));
             embed.Title = "Longest Word";
-            sb.AppendLine($"The Longest word without the letter(s): [**{args}**] is");
-            sb.AppendLine($"[**{longestAcceptableWord}**]");
+            sb.Append("The Longest word without the letter(s): [**").Append(args).AppendLine("**] is");
+            sb.Append("[**").Append(longestAcceptableWord).AppendLine("**]");
             sb.AppendLine();
-            sb.AppendLine($"It is [**{longestAcceptableWord.Length}**] characters long!");
-
+            sb.Append("It is [**").Append(longestAcceptableWord.Length).AppendLine("**] characters long!");
 
             // now we can assign the description of the embed to the contents of the StringBuilder we created
             embed.Description = sb.ToString();
