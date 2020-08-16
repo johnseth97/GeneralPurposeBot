@@ -10,11 +10,11 @@ namespace GeneralPurposeBot.Web.Models
     {
         public Channel(SocketGuildChannel channel)
         {
-            Id = channel.Id;
+            Id = channel.Id.ToString();
             Name = channel.Name;
         }
 
-        public ulong Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
     }
 }

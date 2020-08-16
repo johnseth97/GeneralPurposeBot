@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+
+import Home from '@/views/Home.vue'
+import Help from '@/views/Help.vue'
 
 Vue.use(VueRouter)
 
@@ -11,10 +13,12 @@ Vue.use(VueRouter)
     component: Home
   },
   {
-    path: '/help',
+    path: '/help/:serverId',
     name: 'Help',
     // route level code-splitting
-    component: () => import(/* webpackChunkName: "help" */ '../views/Help.vue')
+    //component: () => import(/* webpackChunkName: "help" */ '../views/Help.vue')
+    component: Help,
+    props: true
   }
 ]
 

@@ -25,7 +25,7 @@
                                     <v-btn class="align-self-end"
                                            outlined
                                            large
-                                           @click="$vuetify.goTo('#about-me')">
+                                           :href="`https://discordapp.com/oauth2/authorize?client_id=${$store.state.botInfo.clientId}&scope=bot&permissions=286379024`">
                                         <v-icon>mdi-plus</v-icon>Add to Server
                                     </v-btn>
                                 </v-col>

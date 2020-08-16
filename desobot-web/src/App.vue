@@ -12,7 +12,7 @@
                         <v-list-item-title>Home</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item link to="/help">
+                <v-list-item link to="/help/0">
                     <v-list-item-action>
                         <v-icon>mdi-help-circle</v-icon>
                     </v-list-item-action>
@@ -71,6 +71,7 @@
         created() {
             this.$vuetify.theme.dark = true
             store.dispatch('login')
+            store.dispatch('botInfo')
         }
     }
 </script>
