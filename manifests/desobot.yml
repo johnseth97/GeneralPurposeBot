@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: desobot
+  namespace: desobot
+  labels:
+    app: desobot
+spec:
+  selector:
+    matchLabels:
+      app: desobot
+  template:
+    metadata:
+      labels:
+        app: desobot
+    spec:
+      containers:
+        - image: __CI_REGISTRY_IMAGE__:__VERSION__ # Replaced at deploy time in gitlab CI config
+          name: desobot
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              memory: 200M
+              cpu: 100m
+          env:
+            - name: prefix
+              valueFrom:
+                configMapKeyRef:
+                  name: desobot
+                  key: defaultPrefix
+            - name: Logging__LogLevel__Microsoft___EntityFrameworkCore
+              value: 'Warning'
+            - name: ConnectionStrings__mysql
+              valueFrom:
+                secretKeyRef:
+                  name: desobot-mysql
+                  key: connstr
+                  optional: false
+            - name: token
+              valueFrom:
+                secretKeyRef:
+                  name: desobot-discord
+                  key: token
+                  optional: false
+            - name: DiscordClientId
+              valueFrom:
+                secretKeyRef:
+                  name: desobot-discord
+                  key: id
+                  optional: false
+            - name: DiscordClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: desobot-discord
+                  key: secret
+                  optional: false
+            - name: errorLogChannel
+              valueFrom:
+                configMapKeyRef:
+                  name: desobot
+                  key: discordErrorLogChannel
+                  optional: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: desobot-service
+  namespace: desobot
+spec:
+  selector:
+    app: desobot
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: desobot-ingress
+  namespace: desobot
+spec:
+  rules:
+    - host: desobot
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: desobot-service
+              servicePort: 80

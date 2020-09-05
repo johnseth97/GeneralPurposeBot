@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: desobot
+  namespace: desobot
+data:
+  discordErrorLogChannel: '705268825758629929'
+  defaultPrefix: '!'
