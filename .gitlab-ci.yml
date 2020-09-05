@@ -27,6 +27,10 @@ deploy:
     image: git.nofla.me:5050/k8s-projects/dockerized-kubectl:latest
     only:
         - master
+    environment:
+        name: production
+        kubernetes:
+            namespace: desobot
     script:
         - kubectl version
         - sed -i "s~__CI_REGISTRY_IMAGE__~${CI_REGISTRY_IMAGE}~g" manifests/desobot.yml
