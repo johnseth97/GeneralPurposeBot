@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: desobot-mariadb-pv-claim
+  namespace: desobot
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: desobot-mariadb
+  namespace: desobot
+spec:
+  selector:
+    app: desobot-mariadb
+  ports:
+  - port: 3306
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: desobot-mariadb
+  namespace: desobot
+spec:
+  selector:
+    matchLabels:
+      app: desobot-mariadb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: desobot-mariadb
+    spec:
+      containers:
+      - name: mariadb
+        image: mariadb:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3306
+          name: mysql
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: desobot-mysql
+                key: rootPass
+                optional: false
+          - name: MYSQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: desobot-mysql
+                key: database
+                optional: false
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: desobot-mysql
+                key: user
+                optional: false
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: desobot-mysql
+                key: password
+                optional: false
+        volumeMounts:
+          - name: desobot-mariadb-persistent-storage
+            mountPath: /var/lib/mysql
+      volumes:
+        - name: desobot-mariadb-persistent-storage
+          persistentVolumeClaim:
+              claimName: desobot-mariadb-pv-claim

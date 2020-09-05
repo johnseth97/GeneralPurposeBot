@@ -24,17 +24,17 @@ build:
         - docker push $CI_REGISTRY_IMAGE:latest
 deploy:
     stage: deploy
-    image: alpine:latest
+    image: git.nofla.me:5050/k8s-projects/dockerized-kubectl:latest
     only:
         - master
     script:
-        - apk update
-        - apk add openssh
-        - chmod a-rwx "$DEPLOY_KEY"
-        - chmod u+rw "$DEPLOY_KEY"
-        - ssh -o StrictHostKeyChecking=no $DEPLOY_SSH_URI -i $DEPLOY_KEY "docker-direct pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
-        - ssh -o StrictHostKeyChecking=no $DEPLOY_SSH_URI -i $DEPLOY_KEY "docker-direct tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA dokku/desobot:$CI_COMMIT_SHA"
-        - ssh -o StrictHostKeyChecking=no $DEPLOY_SSH_URI -i $DEPLOY_KEY "tags:deploy desobot $CI_COMMIT_SHA"
+        - kubectl version
+        - sed -i "s~__CI_REGISTRY_IMAGE__~${CI_REGISTRY_IMAGE}~g" manifests/desobot.yml
+        - sed -i "s/__VERSION__/${CI_COMMIT_SHA}/g" manifests/desobot.yml
+        - kubectl apply -f manifests/desobot.yml
+        - kubectl apply -f manifests/configmap.yml
+        - kubectl apply -f manifests/mariadb.yml
+        - kubectl rollout status deployment desobot
 
 success_notification:
     stage: notification
