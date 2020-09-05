@@ -15,7 +15,11 @@ namespace DiscordBot.Modules
     public class RoleRequestModule : ModuleBase
     {
         public RoleRequestService RoleRequestService { get; set; }
-        public RoleRequestModule(RoleRequestService roleRequestService) { RoleRequestService = roleRequestService; }
+        public RoleRequestModule(RoleRequestService roleRequestService)
+        {
+            RoleRequestService =
+            roleRequestService;
+        }
 
         [Command("add"), Summary("!role add <roleName> to add the role to the list of self-assignable roles. Role must not have moderation-related permissions to work.")]
         [RequireUserPermission(GuildPermission.ManageRoles, ErrorMessage = "You must be able to manage roles to set a role as self-assignable.")]
@@ -42,7 +46,9 @@ namespace DiscordBot.Modules
                         RoleRequestService.AddRole(newRole);
                     }
                     else
+                    {
                         await Context.Channel.SendMessageAsync("Moderated roles can't be self-assignable!");
+                    }
                 }
                 else
                 {
