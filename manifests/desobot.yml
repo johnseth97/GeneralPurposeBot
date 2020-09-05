@@ -80,9 +80,15 @@ kind: Ingress
 metadata:
   name: desobot-ingress
   namespace: desobot
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
 spec:
+  tls:
+  - hosts:
+    - desobot.nofla.me
+    secretName: desobot-nofla-me-tls
   rules:
-    - host: desobot
+    - host: desobot.nofla.me
       http:
         paths:
           - path: /
