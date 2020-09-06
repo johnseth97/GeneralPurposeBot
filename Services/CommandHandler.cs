@@ -83,7 +83,7 @@ namespace GeneralPurposeBot.Services
             // figure out what module the command is in (if any)
             // command search code based on code from CommandService.ExecuteAsync
             var searchResult = await CommandSearch(context, argPos).ConfigureAwait(false);
-
+            if (searchResult == null) return; // command not found
             bool enabled = true;
             if (context.Guild != null)
                 enabled = _spService.IsModuleEnabled(searchResult.Module, context.Guild.Id);
@@ -181,7 +181,6 @@ namespace GeneralPurposeBot.Services
         }
         public async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
-
             var resultStr = result.IsSuccess ? "Success" : (result.Error + ": " + result.ErrorReason);
             System.Console.WriteLine($"Command [{command.Value.Name}] executed for -> [{context.Message.Author}] (Result: {resultStr})");
             if (!result.IsSuccess)
