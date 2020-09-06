@@ -17,6 +17,23 @@ namespace GeneralPurposeBot.Migrations
                 .HasAnnotation("ProductVersion", "3.1.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("GeneralPurposeBot.Models.AssignableRole", b =>
+                {
+                    b.Property<ulong>("RoleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint unsigned");
+
+                    b.Property<string>("RoleName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<ulong>("ServerId")
+                        .HasColumnType("bigint unsigned");
+
+                    b.HasKey("RoleId");
+
+                    b.ToTable("AssignableRoles");
+                });
+
             modelBuilder.Entity("GeneralPurposeBot.Models.ServerModule", b =>
                 {
                     b.Property<Guid>("Id")
