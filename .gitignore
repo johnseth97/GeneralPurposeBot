@@ -3,3 +3,5 @@ obj/*
 bin/*
 .prettierrc
 .vs
+appsettings.json
+.vscode/settings.json
