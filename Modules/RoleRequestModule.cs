@@ -174,13 +174,11 @@ namespace DiscordBot.Modules
 
             embed.Title = "Currently assignable roles";
 
-            foreach (var roles in Context.Guild.Roles)
-            {
-                if (RoleRequestService.GetRole(roles.Id) != null)
-                {
-                    sb.AppendLine(roles.Name);
-                }
-            }
+            Context.Guild.Roles
+                .Where(role => RoleRequestService.GetRole(role.Id) != null)
+                .OrderByDescending(role => role.Position)
+                .ToList()
+                .ForEach(role => sb.AppendLine(role.Name));
 
             embed.Description = sb.ToString();
             await ReplyAsync(null, false, embed.Build()).ConfigureAwait(false);
