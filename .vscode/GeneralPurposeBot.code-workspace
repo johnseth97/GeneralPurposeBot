@@ -1,0 +1,24 @@
+{
+  "folders": [
+	{
+		"path": ".."
+	}
+],
+  "settings": {
+    "sqltools.connections": [
+      {
+        "database": "desobot",
+        "driver": "MariaDB",
+        "mysqlOptions": {
+          "authProtocol": "default"
+        },
+        "name": "GeneralPurposeBot",
+        "password": "yaXI22p4",
+        "port": 3306,
+        "previewLimit": 50,
+        "server": "localhost",
+        "username": "desobot"
+      }
+    ]
+  }
+}
