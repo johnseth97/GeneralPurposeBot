@@ -11,17 +11,19 @@ namespace GeneralPurposeBot.Services
 {
     public class RoleRequestService
     {
-        private BotDbContext DbContext { get; set; }
+        private BotDbContext DbContext { get; }
 
-        public RoleRequestService(BotDbContext dbContext, IConfiguration config)
+        public RoleRequestService(BotDbContext dbContext)
         {
             DbContext = dbContext;
         }
+
         public AssignableRole GetRole(ulong roleID)
         {
             var results = DbContext.AssignableRoles.AsEnumerable().Where(sp => sp.RoleId == roleID);
-            return results.Any() ? results.First() : null;
+            return results.FirstOrDefault();
         }
+
         public AssignableRole AddRole(AssignableRole entity)
         {
             entity = DbContext.AssignableRoles.Add(entity).Entity;
@@ -29,5 +31,9 @@ namespace GeneralPurposeBot.Services
             return entity;
         }
 
+        public void RemoveRole(AssignableRole entity)
+        {
+            DbContext.Remove(entity);
+        }
     }
 }

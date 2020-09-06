@@ -60,9 +60,8 @@ namespace DiscordBot.Modules
             }
             else // create if if not
             {
-                role = await Context.Guild.CreateRoleAsync(roleName, GuildPermissions.None, discordColor, false, null);
+                role = await Context.Guild.CreateRoleAsync(roleName, GuildPermissions.None, discordColor, false, null).ConfigureAwait(false);
                 await role.ModifyAsync(r => r.Position = 2).ConfigureAwait(false);
-
             }
 
             // remove any existing color roles from the user
