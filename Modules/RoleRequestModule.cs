@@ -6,11 +6,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using GeneralPurposeBot.Services;
 using GeneralPurposeBot.Models;
-
 namespace DiscordBot.Modules
 {
 
-    [Group("!role"), Summary("!role set <roleName> to set your role, !role remove to remove your role")]
+    [Group("role"), Summary("!role set <roleName> to set your role, !role remove to remove your role")]
     [RequireBotPermission(Discord.GuildPermission.ManageRoles, ErrorMessage = "The bot must be able to manage roles on the server to set user roles.", NotAGuildErrorMessage = "This must be run inside of a server.")]
     public class RoleRequestModule : ModuleBase
     {
