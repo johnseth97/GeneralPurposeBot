@@ -42,6 +42,7 @@ namespace GeneralPurposeBot
             services.AddSingleton<HttpClient>();
             services.AddSingleton<ServerPropertiesService>();
             services.AddSingleton<TempVcService>();
+            services.AddSingleton<RoleRequestService>();
 
             string connStr = null;
             var connStrs = Configuration.GetSection("ConnectionStrings");
@@ -97,7 +98,8 @@ namespace GeneralPurposeBot
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            } else
+            }
+            else
             {
                 // Auto-migrate in production
                 app.ApplicationServices.GetService<BotDbContext>().Database.Migrate();
