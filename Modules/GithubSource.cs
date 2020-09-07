@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 namespace GeneralPurposeBot.Modules
 {
+    [Summary("Sends bot's github repo")]
     public class GithubSource : ModuleBase
     {
         [Command("source"), Summary("Sends bot's github repo")]

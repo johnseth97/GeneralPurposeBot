@@ -11,6 +11,7 @@ using System.Net.Http;
 
 namespace GeneralPurposeBot.Modules
 {
+    [Summary("Displays the your (or the mentioned user's) profile picture")]
     public class GetAvatar : ModuleBase
     {
         private readonly HttpClient _client;
@@ -19,7 +20,7 @@ namespace GeneralPurposeBot.Modules
             _client = client;
         }
 
-        [Command("avatar"), Summary("Displays the MentionedUser's full profile picture, or the command initiator's full pfp if no user is mentioned.")]
+        [Command("avatar"), Summary("Displays the your (or the mentioned user's) profile picture")]
         public async Task Avatar(SocketUser MentionedUser = null)
         {
             string url;

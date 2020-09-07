@@ -8,9 +8,10 @@ using System;
 
 namespace GeneralPurposeBot.Modules
 {
+    [Summary("Hello, world!")]
     public class HelloCommand : ModuleBase
     {
-        [Command("hello"), Summary("!hello")]
+        [Command("hello"), Summary("Hello, world!")]
         public async Task Hello()
         {
             // initialize empty string builder for reply
@@ -20,7 +21,7 @@ namespace GeneralPurposeBot.Modules
             var user = Context.User;
 
             // build out the reply
-            sb.AppendLine($"You are -> [{Context.Message.Author}]");
+            sb.Append("You are -> [").Append(Context.Message.Author).AppendLine("]");
             sb.AppendLine("I must now say, World!");
 
             // send simple string reply

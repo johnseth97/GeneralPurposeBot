@@ -8,11 +8,12 @@ using System.Collections.Generic;
 
 namespace GeneralPurposeBot.Modules
 {
+    [Summary("Gets the longest word in the english language that doesn't contain the letters specified")]
     public class LongestWord : ModuleBase
     {
-        [Command("LongestWordWithout"), Summary("!lww: Gets the longest word in the english language that doesn't contain the letters specified")]
+        [Command("LongestWordWithout"), Summary("Gets the longest word in the english language that doesn't contain the letters specified")]
         [Alias("lww")]
-        public async Task lww([Remainder] string args = null)
+        public async Task LongestWordWithout([Remainder] string args = null)
         {
             // I like using StringBuilder to build out the reply
             var sb = new StringBuilder();
