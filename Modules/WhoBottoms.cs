@@ -9,10 +9,11 @@ using System;
 
 namespace GeneralPurposeBot.Modules
 {
+    [Summary("Decides The Bottom.")]
     public class WhoBottoms : ModuleBase
     {
         [RequireNsfw]
-        [Command("whobottoms"), Summary("Decides The Bottom. Usage: !whobottoms <@otherUser>")]
+        [Command("whobottoms"), Summary("Decides The Bottom.")]
         public async Task BottomDecider(SocketUser user)
         {
             // I like using StringBuilder to build out the reply

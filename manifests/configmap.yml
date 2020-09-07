@@ -6,3 +6,4 @@ metadata:
 data:
   discordErrorLogChannel: '705268825758629929'
   defaultPrefix: '!'
+  webBaseUrl: https://desobot.nofla.me
