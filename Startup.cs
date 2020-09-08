@@ -34,7 +34,7 @@ namespace GeneralPurposeBot
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHostedService<BotHostedService>();
-            services.AddSingleton<DiscordSocketClient>();
+            services.AddSingleton<DiscordShardedClient>();
             services.AddSingleton<CommandService>();
             services.AddSingleton<CommandHandler>();
             services.AddSingleton<CuteDetection>();

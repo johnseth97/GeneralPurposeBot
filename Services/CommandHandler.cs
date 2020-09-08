@@ -18,11 +18,11 @@ namespace GeneralPurposeBot.Services
         // setup fields to be set later in the constructor
         private readonly IConfiguration _config;
         public readonly CommandService Commands;
-        private readonly DiscordSocketClient _client;
+        private readonly DiscordShardedClient _client;
         private readonly IServiceProvider _services;
         private readonly ServerPropertiesService _spService;
 
-        public CommandHandler(IServiceProvider services, IConfiguration config, CommandService commandService, DiscordSocketClient client, ServerPropertiesService spService)
+        public CommandHandler(IServiceProvider services, IConfiguration config, CommandService commandService, DiscordShardedClient client, ServerPropertiesService spService)
         {
             // didn't grab these from the service provider because it's usually considered better convention to have them defined in the constructor
             _config = config;
@@ -78,7 +78,7 @@ namespace GeneralPurposeBot.Services
             {
                 return;
             }
-            var context = new SocketCommandContext(_client, message);
+            var context = new ShardedCommandContext(_client, message);
 
             // figure out what module the command is in (if any)
             // command search code based on code from CommandService.ExecuteAsync

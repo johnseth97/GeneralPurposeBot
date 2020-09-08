@@ -25,7 +25,7 @@ namespace GeneralPurposeBot.Modules
             sb.AppendLine("I must now say, World!");
 
             // send simple string reply
-            await ReplyAsync(sb.ToString());
+            await ReplyAsync(sb.ToString()).ConfigureAwait(false);
         }
     }
 }

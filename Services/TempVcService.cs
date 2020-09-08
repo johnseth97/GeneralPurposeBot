@@ -13,13 +13,13 @@ namespace GeneralPurposeBot.Services
 {
     public class TempVcService
     {
-        private DiscordSocketClient Client { get; }
+        private DiscordShardedClient Client { get; }
         private ServerPropertiesService SpService { get; }
         private ILogger<TempVcService> Logger { get; }
 
         private readonly Dictionary<IGuildUser, long> spamProtectionDictionary = new Dictionary<IGuildUser, long>();
         private readonly Dictionary<IGuildUser, int> spamProtectionCountDictionary = new Dictionary<IGuildUser, int>();
-        public TempVcService(DiscordSocketClient client, ServerPropertiesService spService, ILogger<TempVcService> logger)
+        public TempVcService(DiscordShardedClient client, ServerPropertiesService spService, ILogger<TempVcService> logger)
         {
             Client = client;
             SpService = spService;

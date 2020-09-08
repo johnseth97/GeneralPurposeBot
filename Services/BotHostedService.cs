@@ -16,7 +16,7 @@ namespace GeneralPurposeBot.Services
 {
     public class BotHostedService : IHostedService
     {
-        private DiscordSocketClient Client { get; }
+        private DiscordShardedClient Client { get; }
         private IConfiguration Config { get; }
         private CommandHandler CommandHandler { get; }
         private CommandService CommandService { get; }
@@ -25,7 +25,7 @@ namespace GeneralPurposeBot.Services
         public ILogger<BotHostedService> Logger { get; }
         public TempVcService TempVcService { get; }
 
-        public BotHostedService(DiscordSocketClient client,
+        public BotHostedService(DiscordShardedClient client,
             IConfiguration config,
             CommandHandler commandHandler,
             CommandService commandService,
@@ -48,7 +48,7 @@ namespace GeneralPurposeBot.Services
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             Client.Log += LogWrapper.Log;
-            Client.Ready += Ready;
+            Client.ShardReady += ShardReady;
             CommandService.Log += LogWrapper.Log;
             await Client.LoginAsync(TokenType.Bot, Config["Token"]).ConfigureAwait(false);
             await Client.StartAsync().ConfigureAwait(false);
@@ -56,9 +56,9 @@ namespace GeneralPurposeBot.Services
             CuteDetection.Initialize();
         }
 
-        private Task Ready()
+        private Task ShardReady(DiscordSocketClient arg)
         {
-            Logger.LogInformation("Connected as -> [{user}]", Client.CurrentUser);
+            Logger.LogInformation("Shard connected");
             return Task.CompletedTask;
         }
 

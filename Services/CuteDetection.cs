@@ -12,7 +12,7 @@ namespace GeneralPurposeBot.Services
 {
     public class CuteDetection : ServiceEventProxy
     {
-        public CuteDetection(DiscordSocketClient client, ServerPropertiesService spService)
+        public CuteDetection(DiscordShardedClient client, ServerPropertiesService spService)
         {
             Client = client;
             SpService = spService;

@@ -14,7 +14,7 @@ namespace GeneralPurposeBot.Services
 {
     public abstract class ServiceEventProxy
     {
-        public DiscordSocketClient Client;
+        public DiscordShardedClient Client;
         public ServerPropertiesService SpService;
 
         /// <summary>
