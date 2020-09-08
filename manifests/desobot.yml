@@ -61,6 +61,12 @@ spec:
                   name: desobot
                   key: discordErrorLogChannel
                   optional: false
+            - name: WebBaseUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: desobot
+                  key: webBaseUrl
+                  optional: false
 ---
 apiVersion: v1
 kind: Service

@@ -11,18 +11,18 @@ using System.Threading.Tasks;
 
 namespace DiscordBot.Modules
 {
-    [Group("color"), Summary("!color set <colorName> or !color set <hex-code> to set your color, !color remove to remove your colors")]
+    [Group("Color"), Summary("Allows you to request color roles")]
     [RequireBotPermission(Discord.GuildPermission.ManageRoles, ErrorMessage = "The bot must be able to manage roles on the server to set user colors.", NotAGuildErrorMessage = "This must be run inside of a server.")]
     public class ColorRolesModule : ModuleBase
     {
-        [Command("set")]
+        [Command("set"), Summary("Sets a color role")]
         public async Task Set(string color)
         {
             var user = await Context.Guild.GetUserAsync(Context.User.Id).ConfigureAwait(false);
             await Set(user, color).ConfigureAwait(false);
         }
 
-        [Command("set")]
+        [Command("set"), Summary("Sets a color role")]
         [RequireUserPermission(GuildPermission.ManageRoles, ErrorMessage = "You must be able to manage roles to set another user's color.")]
         public async Task Set(IGuildUser user, string colorStr)
         {
@@ -74,14 +74,14 @@ namespace DiscordBot.Modules
             await Context.Channel.SendMessageAsync($"{user.Mention} now has the **{roleName}** role.").ConfigureAwait(false);
         }
 
-        [Command("remove")]
+        [Command("remove"), Summary("Removes a color role")]
         public async Task Remove()
         {
             var user = await Context.Guild.GetUserAsync(Context.User.Id).ConfigureAwait(false);
             await Remove(user).ConfigureAwait(false);
         }
 
-        [Command("remove")]
+        [Command("remove"), Summary("Removes a color role")]
         [RequireUserPermission(GuildPermission.ManageRoles, ErrorMessage = "You must be able to manage roles to set another user's color.")]
         public async Task Remove(IGuildUser user)
         {

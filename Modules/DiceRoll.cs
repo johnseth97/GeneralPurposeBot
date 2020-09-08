@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace GeneralPurposeBot.Modules
 {
+    [Summary("Rolls dice")]
     public class DiceRoll : ModuleBase
     {
         [Command("dice"), Summary("Rolls dice")]

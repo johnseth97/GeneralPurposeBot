@@ -8,9 +8,10 @@ using System.Collections.Generic;
 
 namespace GeneralPurposeBot.Modules
 {
+    [Summary("Ask the Magic Conch a question")]
     public class AskMagicConch : ModuleBase
     {
-        [Command("MagicConch"), Summary("!MagicConch <question>")]
+        [Command("MagicConch"), Summary("Ask the Magic Conch a question")]
         [Alias("ask")]
         public async Task MagicConch([Remainder]string args = null)
         {
