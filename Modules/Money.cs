@@ -9,7 +9,7 @@ namespace GeneralPurposeBot.Modules
     [Group("money"), Summary("See how much money you have and give some to others")]
     public class Money : GameModuleBase
     {
-        public Money(Services.GameMoneyService gameMoneyService) : base(gameMoneyService)
+        protected Money(Services.GameMoneyService gameMoneyService, Services.GameItemService gameItemService) : base(gameMoneyService, gameItemService)
         {
         }
 

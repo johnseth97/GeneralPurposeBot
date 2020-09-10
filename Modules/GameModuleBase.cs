@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using GeneralPurposeBot.Services;
+using GeneralPurposeBot.Services.Items;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,25 @@ namespace GeneralPurposeBot.Modules
         }
 
         public GameMoneyService GameMoneyService { get; }
-        protected GameModuleBase(GameMoneyService gameMoneyService)
+        public GameItemService GameItemService { get; }
+        protected GameModuleBase(GameMoneyService gameMoneyService, GameItemService gameItemService)
         {
             GameMoneyService = gameMoneyService;
+            GameItemService = gameItemService;
+        }
+
+        public ItemBase FindItem(string search)
+        {
+            if (GameItemService.Items.ContainsKey(search))
+                return GameItemService.Items[search];
+            var items = GameItemService.Items.Values
+                .Where(i => string.Equals(i.Name, search, StringComparison.InvariantCultureIgnoreCase));
+            return items.FirstOrDefault();
+        }
+
+        public int GiveItem(string itemName, int quantity = 1)
+        {
+            return GameItemService.GiveItem(Context.Guild.Id, Context.User.Id, itemName, quantity);
         }
     }
 }

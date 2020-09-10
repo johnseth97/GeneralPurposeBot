@@ -24,6 +24,7 @@ namespace GeneralPurposeBot.Services
                 ServerId = server,
                 Money = 100
             });
+            DbContext.SaveChanges();
         }
 
         public decimal GetMoney(ulong server, ulong user)
