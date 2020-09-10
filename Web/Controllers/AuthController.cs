@@ -15,8 +15,8 @@ namespace GeneralPurposeBot.Web.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        public DiscordSocketClient Client { get; }
-        public AuthController(DiscordSocketClient client)
+        public DiscordShardedClient Client { get; }
+        public AuthController(DiscordShardedClient client)
         {
             Client = client;
         }
