@@ -15,7 +15,7 @@ namespace GeneralPurposeBot.Web.Models.Auth
         {
         }
 
-        public Whoami(AuthenticateResult authResult, DiscordSocketClient client)
+        public Whoami(AuthenticateResult authResult, DiscordShardedClient client)
         {
             Authenticated = authResult.Succeeded;
             FailureReason = authResult.Failure?.Message;
