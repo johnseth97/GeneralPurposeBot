@@ -43,6 +43,8 @@ namespace GeneralPurposeBot
             services.AddSingleton<ServerPropertiesService>();
             services.AddSingleton<TempVcService>();
             services.AddSingleton<RoleRequestService>();
+            services.AddSingleton<GameMoneyService>();
+
 
             string connStr = null;
             var connStrs = Configuration.GetSection("ConnectionStrings");
