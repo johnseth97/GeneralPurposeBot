@@ -19,5 +19,20 @@ namespace GeneralPurposeBot.Services.Items
         public override string SingularName => "Piece of Dust";
 
         public override string PluralName => "Pieces of Dust";
+
+        public override async Task UseAsync(ICommandContext context, GameMoneyService gameMoneyService, GameItemService gameItemService)
+        {
+            var random = new Random().Next(1, 10);
+            if (random == 1)
+            {
+                await context.Channel.SendMessageAsync("Someone on the street said this dust was pretty valuable, paying you $20 for it.").ConfigureAwait(false);
+                var money = gameMoneyService.GetMoney(context.Guild.Id, context.User.Id);
+                await gameMoneyService.SetMoneyAsync(context.Guild.Id, context.User.Id, money + 20).ConfigureAwait(false);
+            }
+            else {
+                await context.Channel.SendMessageAsync("*poof*").ConfigureAwait(false);
+            }
+            gameItemService.TakeItem(context.Guild.Id, context.User.Id, "Dust");
+        }
     }
 }

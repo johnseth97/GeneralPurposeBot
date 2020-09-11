@@ -16,8 +16,12 @@ namespace GeneralPurposeBot.Modules
             set => GameMoneyService.SetMoney(Context.Guild.Id, Context.User.Id, value);
         }
 
+        protected string MoneyString => Money.FormatMoney();
         public GameMoneyService GameMoneyService { get; }
         public GameItemService GameItemService { get; }
+
+        protected Dictionary<string, int> UserItems => GameItemService.GetItems(Context.Guild.Id, Context.User.Id);
+        protected Dictionary<string, ItemBase> AllItems => GameItemService.Items;
         protected GameModuleBase(GameMoneyService gameMoneyService, GameItemService gameItemService)
         {
             GameMoneyService = gameMoneyService;
@@ -36,6 +40,19 @@ namespace GeneralPurposeBot.Modules
         public int GiveItem(string itemName, int quantity = 1)
         {
             return GameItemService.GiveItem(Context.Guild.Id, Context.User.Id, itemName, quantity);
+        }
+        public int TakeItem(string itemName, int quantity = 1)
+        {
+            return GameItemService.TakeItem(Context.Guild.Id, Context.User.Id, itemName, quantity);
+        }
+        public int ItemQuantity(string itemName)
+        {
+            return GameItemService.GetItemQuantity(Context.Guild.Id, Context.User.Id, itemName);
+        }
+
+        public bool HasItem(string itemName, int quantity = 1)
+        {
+            return ItemQuantity(itemName) >= quantity;
         }
     }
 }

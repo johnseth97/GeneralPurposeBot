@@ -17,7 +17,7 @@ namespace GeneralPurposeBot.Modules
         [Alias("balance", "amount")]
         public async Task Balance()
         {
-            await ReplyAsync($"You have **${Money}**").ConfigureAwait(false);
+            await ReplyAsync($"You have **${MoneyString}**").ConfigureAwait(false);
         }
     }
 }

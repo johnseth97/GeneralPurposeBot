@@ -75,13 +75,16 @@ namespace GeneralPurposeBot.Services
                 .Where(ui => ui.ServerId == server &&
                     ui.UserId == user &&
                     ui.ItemName == itemName);
-            if (!items.Any() || items.First().Quantity < quantity)
+            var item = items.First();
+            if (!items.Any() || item.Quantity < quantity)
             {
                 return items.Any() ? items.First().Quantity : 0;
             }
-            items.First().Quantity -= quantity;
+            item.Quantity -= quantity;
+            if (item.Quantity == 0)
+                DbContext.UserItems.Remove(item);
             DbContext.SaveChanges();
-            return items.First().Quantity;
+            return item.Quantity;
         }
     }
 }

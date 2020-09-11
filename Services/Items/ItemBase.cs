@@ -28,24 +28,29 @@ namespace GeneralPurposeBot.Services.Items
         public abstract decimal StoreBuyPrice { get; }
         public virtual bool StoreSellable { get => StoreBuyable; }
         public virtual decimal StoreSellPrice { get => StoreBuyPrice; }
-        public virtual async Task UseAsync(ICommandContext context, GameMoneyService gameMoneyService, GameItemService gameItemService) 
+        public virtual async Task UseAsync(ICommandContext context, GameMoneyService gameMoneyService, GameItemService gameItemService)
         {
             await context.Channel.SendMessageAsync("Huh, this item can't be used...").ConfigureAwait(false);
         }
 
         public string GetStoreItemString()
         {
-            // $"**{item.Key}** (Buy: ${item.Value.StoreBuyPrice}/Sell: ${item.Value.StoreSellPrice})
             var result = "**" + Name + "** (";
             var buySellStrings = new List<string>();
             if (StoreBuyable)
-                buySellStrings.Add("Buy: $" + StoreBuyPrice);
+                buySellStrings.Add("Buy: $" + StoreBuyPrice.FormatMoney());
             if (StoreSellable)
-                buySellStrings.Add("Sell: $" + StoreSellPrice);
+                buySellStrings.Add("Sell: $" + StoreSellPrice.FormatMoney());
             result += string.Join(" | ", buySellStrings);
             result += "): ";
             result += Description;
             return result;
+        }
+
+        public string GetName(int quantity = 0)
+        {
+            if (quantity == 1) return SingularName;
+            return PluralName;
         }
     }
 }

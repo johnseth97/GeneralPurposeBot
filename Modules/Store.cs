@@ -34,6 +34,16 @@ namespace GeneralPurposeBot.Modules
                 await ReplyAsync("This item does not exist!").ConfigureAwait(false);
                 return;
             }
+            if (quantity <= 0)
+            {
+                await ReplyAsync($"Huh, do you really expect me to sell **{quantity} {item.GetName(quantity)}** to you?").ConfigureAwait(false);
+                return;
+            }
+            if (!item.StoreBuyable)
+            {
+                await ReplyAsync("This item is not buyable!").ConfigureAwait(false);
+                return;
+            }
             var totalPrice = quantity * item.StoreBuyPrice;
             if (Money < totalPrice)
             {
@@ -41,8 +51,38 @@ namespace GeneralPurposeBot.Modules
                 return;
             }
             Money -= totalPrice;
-            var newQuantity = GiveItem(itemName, quantity);
-            await ReplyAsync($"You now have **{newQuantity} {(newQuantity == 1 ? item.SingularName : item.PluralName)}**! After this transaction, your balance is **${Money}**.").ConfigureAwait(false);
+            var newQuantity = GiveItem(item.Name, quantity);
+            await ReplyAsync($"You now have **{newQuantity} {item.GetName(newQuantity)}**! After this transaction, your balance is **${MoneyString}**.").ConfigureAwait(false);
+        }
+
+        [Command("sell"), Summary("Sell an item to the store")]
+        public async Task Sell(string itemName, int quantity = 1)
+        {
+            var item = FindItem(itemName);
+            if (item == null)
+            {
+                await ReplyAsync("This item does not exist!").ConfigureAwait(false);
+                return;
+            }
+            if (quantity <= 0)
+            {
+                await ReplyAsync($"Huh, do you really expect me to buy **{quantity} {item.GetName(quantity)}** from you?").ConfigureAwait(false);
+                return;
+            }
+            if (!item.StoreSellable)
+            {
+                await ReplyAsync("This item is not sellable!").ConfigureAwait(false);
+                return;
+            }
+            var totalPrice = quantity * item.StoreSellPrice;
+            if (!HasItem(item.Name, quantity))
+            {
+                await ReplyAsync("You do not have enough of this item!").ConfigureAwait(false);
+                return;
+            }
+            Money += totalPrice;
+            var newQuantity = TakeItem(item.Name, quantity);
+            await ReplyAsync($"You now have **{newQuantity} {item.GetName(newQuantity)}**! After this transaction, your balance is **${MoneyString}**.").ConfigureAwait(false);
         }
     }
 }

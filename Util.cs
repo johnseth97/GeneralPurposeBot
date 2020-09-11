@@ -48,5 +48,8 @@ namespace GeneralPurposeBot
                     where string.Equals(scheme.Name, provider, StringComparison.OrdinalIgnoreCase)
                     select scheme).Any();
         }
+
+        public static string FormatMoney(this decimal amount)
+            => string.Format("{0:0.00}", amount);
     }
 }
