@@ -32,7 +32,7 @@ namespace GeneralPurposeBot.Services.GameItems
                     gameMoneyService.AddMoney(context.Guild.Id, context.User.Id, addMoney);
                     await context.Channel.SendMessageAsync($"You sold your designer pair of shoes for ${addMoney}").ConfigureAwait(false);
                 }
-            } 
+            }
             else
             {
                 if (random > 15)
@@ -48,4 +48,5 @@ namespace GeneralPurposeBot.Services.GameItems
                 }
             }
         }
+    }
 }
