@@ -1,4 +1,5 @@
-using GeneralPurposeBot.Services.Items;
+using GeneralPurposeBot.Services.GameItems;
+using Discord.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,10 +30,9 @@ namespace GeneralPurposeBot.Services.GameItems
             }
             else
             {
-                var amt = (0.16 * random) * 1001;
-                var money = gameMoneyService.GetMoney(context.Guild.Id, context.User.Id);
-                await gameMoneyService.SetMoneyAsync(context.Guild.Id, context.User.Id, money + amt).ConfigureAwait(false);
-                await context.Channel.SendMessageAsync("You sold the lamp on Facebook Marketplace for" amt);
+                var amt = Math.Floor((0.16 * random) * 1001);
+                gameMoneyService.AddMoney(context.Guild.Id, context.User.Id, amt);
+                await context.Channel.SendMessageAsync($"You sold the lamp on Facebook Marketplace for ${amt}");
             }
         }
     }
