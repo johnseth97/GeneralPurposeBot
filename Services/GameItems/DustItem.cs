@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GeneralPurposeBot.Services.Items
+namespace GeneralPurposeBot.Services.GameItems
 {
     public class DustItem : ItemBase
     {
