@@ -30,7 +30,7 @@ namespace GeneralPurposeBot.Services.GameItems
             }
             else
             {
-                var amt = Math.Floor((0.16 * random) * 1001);
+                var amt = Convert.ToDecimal((0.16 * random) * 1001);
                 gameMoneyService.AddMoney(context.Guild.Id, context.User.Id, amt);
                 await context.Channel.SendMessageAsync($"You sold the lamp on Facebook Marketplace for ${amt}");
             }
