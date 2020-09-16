@@ -1,5 +1,5 @@
 ﻿using Discord.Commands;
-using GeneralPurposeBot.Services.Items;
+using GeneralPurposeBot.Services.GameItems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
