@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,25 @@ namespace GeneralPurposeBot.Modules
                 return;
             }
             await item.UseAsync(Context, GameMoneyService, GameItemService).ConfigureAwait(false);
+        }
+
+        [Command("give"), Summary("Give an item to somebody else")]
+        public async Task Give(IGuildUser user, string itemName, int quantity = 1)
+        {
+            var item = FindItem(itemName);
+            if (item == null)
+            {
+                await ReplyAsync("This item does not exist!").ConfigureAwait(false);
+                return;
+            }
+            if (!HasItem(item.Name, quantity))
+            {
+                await ReplyAsync("You do not have enough of this item!").ConfigureAwait(false);
+                return;
+            }
+            TakeItem(item.Name, quantity);
+            GameItemService.GiveItem(Context.Guild.Id, user.Id, item.Name, quantity);
+            await ReplyAsync($"You have given {user.Mention} **{quantity} {item.GetName(quantity)}**!").ConfigureAwait(false);
         }
     }
 }
