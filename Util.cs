@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,5 +52,10 @@ namespace GeneralPurposeBot
 
         public static string FormatMoney(this decimal amount)
             => string.Format("{0:0.00}", amount);
+
+        public static string GetDisplayName(this IGuildUser user)
+        {
+            return user.Nickname ?? user.Username;
+        }
     }
 }

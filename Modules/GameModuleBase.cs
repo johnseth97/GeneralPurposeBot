@@ -26,6 +26,8 @@ namespace GeneralPurposeBot.Modules
         {
             GameMoneyService = gameMoneyService;
             GameItemService = gameItemService;
+
+            Console.WriteLine("gamemodulebase created - context==null: " + (Context == null));
         }
 
         public ItemBase FindItem(string search)

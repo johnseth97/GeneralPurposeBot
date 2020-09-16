@@ -23,7 +23,7 @@ namespace GeneralPurposeBot.Services.Items
         public override async Task UseAsync(ICommandContext context, GameMoneyService gameMoneyService, GameItemService gameItemService)
         {
             var random = new Random().Next(1, 10);
-            if (random == 1)
+            if (random <= 2)
             {
                 await context.Channel.SendMessageAsync("Someone on the street said this dust was pretty valuable, paying you $20 for it.").ConfigureAwait(false);
                 var money = gameMoneyService.GetMoney(context.Guild.Id, context.User.Id);

@@ -42,5 +42,13 @@ namespace GeneralPurposeBot.Services
             DbContext.UserMoney.Find(server, user).Money = amount;
             await DbContext.SaveChangesAsync().ConfigureAwait(false);
         }
+
+        public IOrderedQueryable<UserMoney> GetAllInServer(ulong server)
+        {
+            return DbContext.UserMoney
+                .AsQueryable()
+                .Where(um => um.ServerId == server)
+                .OrderByDescending(um => um.Money);
+        }
     }
 }
