@@ -30,9 +30,9 @@ namespace GeneralPurposeBot.Services.Items
                 await gameMoneyService.SetMoneyAsync(context.Guild.Id, context.User.Id, money + 20).ConfigureAwait(false);
             }
             else {
-                await context.Channel.SendMessageAsync("*poof*").ConfigureAwait(false);
+                await context.Channel.SendMessageAsync("*poof* (-1 dust)").ConfigureAwait(false);
             }
-            gameItemService.TakeItem(context.Guild.Id, context.User.Id, "Dust");
+            gameItemService.TakeItem(context.Guild.Id, context.User.Id, Name);
         }
     }
 }
