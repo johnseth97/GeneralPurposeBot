@@ -1,5 +1,4 @@
 ﻿using Discord.Commands;
-using GeneralPurposeBot.Services.Items;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +8,7 @@ namespace GeneralPurposeBot.Services.GameItems
 {
     public class TableItem : ItemBase
     {
-        public override string Name => "Shoe";
+        public override string Name => "Table";
 
         public override string Description => "The fanciest table around!";
 

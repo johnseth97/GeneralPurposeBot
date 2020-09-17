@@ -25,7 +25,7 @@ namespace GeneralPurposeBot.Modules
         [Alias("balance", "amount")]
         public async Task Balance(IGuildUser user)
         {
-            await ReplyAsync($"{user.Mention} has **${GameMoneyService.GetMoney(Context.Guild.Id, user.Id).FormatMoney()}**").ConfigureAwait(false); ;
+            await ReplyAsync($"{user.Mention} has **${GameMoneyService.GetMoney(Context.Guild.Id, user.Id).FormatMoney()}**").ConfigureAwait(false);
         }
 
         [Command("reset"), Summary("Reset your money, if you have none (and no items)")]

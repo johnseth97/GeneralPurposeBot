@@ -1,5 +1,4 @@
 ﻿using Discord.Commands;
-using GeneralPurposeBot.Services.Items;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +43,7 @@ namespace GeneralPurposeBot.Services.GameItems
                 else
                 {
                     gameItemService.TakeItem(context.Guild.Id, context.User.Id, Name, 1);
-                    await context.Channel.SendMessageAsync($"Your shoe gets worn out. (-1 shoe)").ConfigureAwait(false);
+                    await context.Channel.SendMessageAsync("Your shoe gets worn out. (-1 shoe)").ConfigureAwait(false);
                 }
             }
         }

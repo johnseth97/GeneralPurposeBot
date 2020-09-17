@@ -26,13 +26,13 @@ namespace GeneralPurposeBot.Services.GameItems
             var random = new Random().Next(1, 100);
             if (random <= 50)
             {
-                await context.Channel.SendMessageAsync($"The lamp broke").ConfigureAwait(false);
+                await context.Channel.SendMessageAsync("The lamp broke").ConfigureAwait(false);
             }
             else
             {
-                var amt = Math.Floor((0.16 * random) * 1001);
+                var amt = Convert.ToDecimal(Math.Floor(0.16 * random * 1001));
                 gameMoneyService.AddMoney(context.Guild.Id, context.User.Id, amt);
-                await context.Channel.SendMessageAsync($"You sold the lamp on Facebook Marketplace for ${amt}");
+                await context.Channel.SendMessageAsync($"You sold the lamp on Facebook Marketplace for ${amt}").ConfigureAwait(false);
             }
         }
     }

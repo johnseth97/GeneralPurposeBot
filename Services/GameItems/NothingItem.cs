@@ -1,5 +1,4 @@
 ﻿using Discord.Commands;
-using GeneralPurposeBot.Services.Items;
 using System;
 using System.Collections.Generic;
 using System.Linq;
