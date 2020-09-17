@@ -16,7 +16,7 @@ namespace GeneralPurposeBot.Services
 
         public void SetDefaultIfNeeded(ulong server, ulong user)
         {
-            if (DbContext.UserMoney.Any(um => um.ServerId == server && um.UserId == user))
+            if (UserHasWallet(server, user))
                 return;
             DbContext.UserMoney.Add(new UserMoney()
             {
@@ -32,6 +32,12 @@ namespace GeneralPurposeBot.Services
             SetDefaultIfNeeded(server, user);
             return DbContext.UserMoney.Find(server, user).Money;
         }
+
+        public bool UserHasWallet(ulong server, ulong user)
+        {
+            return DbContext.UserMoney.Any(um => um.ServerId == server && um.UserId == user);
+        }
+
         public void SetMoney(ulong server, ulong user, decimal amount)
         {
             DbContext.UserMoney.Find(server, user).Money = amount;
