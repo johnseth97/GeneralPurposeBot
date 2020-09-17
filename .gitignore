@@ -5,3 +5,5 @@ bin/*
 .vs
 appsettings.json
 .vscode/settings.json
+.vscode/GeneralPurposeBot.code-workspace
+DesoBot.code-workspace
