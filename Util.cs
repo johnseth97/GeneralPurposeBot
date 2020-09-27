@@ -33,7 +33,7 @@ namespace GeneralPurposeBot
 
             var schemes = context.RequestServices.GetRequiredService<IAuthenticationSchemeProvider>();
 
-            return (from scheme in await schemes.GetAllSchemesAsync()
+            return (from scheme in await schemes.GetAllSchemesAsync().ConfigureAwait(false)
                     where !string.IsNullOrEmpty(scheme.DisplayName)
                     select scheme).ToArray();
         }
@@ -45,7 +45,7 @@ namespace GeneralPurposeBot
                 throw new ArgumentNullException(nameof(context));
             }
 
-            return (from scheme in await context.GetExternalProvidersAsync()
+            return (from scheme in await context.GetExternalProvidersAsync().ConfigureAwait(false)
                     where string.Equals(scheme.Name, provider, StringComparison.OrdinalIgnoreCase)
                     select scheme).Any();
         }
@@ -56,6 +56,18 @@ namespace GeneralPurposeBot
         public static string GetDisplayName(this IGuildUser user)
         {
             return user.Nickname ?? user.Username;
+        }
+
+        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            HashSet<TKey> seenKeys = new HashSet<TKey>();
+            foreach (TSource element in source)
+            {
+                if (seenKeys.Add(keySelector(element)))
+                {
+                    yield return element;
+                }
+            }
         }
     }
 }
