@@ -44,7 +44,6 @@ namespace GeneralPurposeBot.Services
             TempVcService = tempVcService;
         }
 
-
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             Client.Log += LogWrapper.Log;
@@ -52,7 +51,7 @@ namespace GeneralPurposeBot.Services
             CommandService.Log += LogWrapper.Log;
             await Client.LoginAsync(TokenType.Bot, Config["Token"]).ConfigureAwait(false);
             await Client.StartAsync().ConfigureAwait(false);
-            await CommandHandler.InitializeAsync().ConfigureAwait(false);
+            CommandHandler.Initialize();
             CuteDetection.Initialize();
         }
 

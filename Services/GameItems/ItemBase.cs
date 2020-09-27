@@ -1,4 +1,5 @@
 ﻿using Discord.Commands;
+using GeneralPurposeBot.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,9 +29,10 @@ namespace GeneralPurposeBot.Services.GameItems
         public abstract decimal StoreBuyPrice { get; }
         public virtual bool StoreSellable { get => StoreBuyable; }
         public virtual decimal StoreSellPrice { get => StoreBuyPrice; }
-        public virtual async Task UseAsync(ICommandContext context, GameMoneyService gameMoneyService, GameItemService gameItemService)
+        public virtual Task UseAsync(GameTransaction transaction)
         {
-            await context.Channel.SendMessageAsync("Huh, this item can't be used...").ConfigureAwait(false);
+            transaction.Message = "Huh, this item can't be used";
+            return Task.CompletedTask;
         }
 
         public string GetStoreItemString()

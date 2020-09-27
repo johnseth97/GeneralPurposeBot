@@ -28,7 +28,7 @@ namespace GeneralPurposeBot.Modules
         [Command("buy"), Summary("Buy an item from the store")]
         public async Task Buy(string itemName, int quantity = 1)
         {
-            var item = FindItem(itemName);
+            var item = Transaction.FindItem(itemName);
             if (item == null)
             {
                 await ReplyAsync("This item does not exist!").ConfigureAwait(false);
@@ -50,15 +50,16 @@ namespace GeneralPurposeBot.Modules
                 await ReplyAsync("You do not have enough money for this item!").ConfigureAwait(false);
                 return;
             }
-            Money -= totalPrice;
-            var newQuantity = GiveItem(item.Name, quantity);
-            await ReplyAsync($"You now have **{newQuantity} {item.GetName(newQuantity)}**! After this transaction, your balance is **${MoneyString}**.").ConfigureAwait(false);
+            Transaction.TakeMoney(totalPrice);
+            Transaction.GiveItems(item.Name, quantity);
+            var newQuantity = Transaction.GetItemQuantity(item.Name);
+            Transaction.Message = $"You now have **{newQuantity} {item.GetName(newQuantity)}**! After this transaction, your balance is **${MoneyString}**.";
         }
 
         [Command("sell"), Summary("Sell an item to the store")]
         public async Task Sell(string itemName, int quantity = 1)
         {
-            var item = FindItem(itemName);
+            var item = Transaction.FindItem(itemName);
             if (item == null)
             {
                 await ReplyAsync("This item does not exist!").ConfigureAwait(false);
@@ -75,14 +76,15 @@ namespace GeneralPurposeBot.Modules
                 return;
             }
             var totalPrice = quantity * item.StoreSellPrice;
-            if (!HasItem(item.Name, quantity))
+            if (!Transaction.HasItem(item.Name, quantity))
             {
                 await ReplyAsync("You do not have enough of this item!").ConfigureAwait(false);
                 return;
             }
-            Money += totalPrice;
-            var newQuantity = TakeItem(item.Name, quantity);
-            await ReplyAsync($"You now have **{newQuantity} {item.GetName(newQuantity)}**! After this transaction, your balance is **${MoneyString}**.").ConfigureAwait(false);
+            Transaction.GiveMoney(totalPrice);
+            Transaction.TakeItems(item.Name, quantity);
+            var newQuantity = Transaction.GetItemQuantity(item.Name);
+            Transaction.Message = $"You now have **{newQuantity} {item.GetName(newQuantity)}**! After this transaction, your balance is **${MoneyString}**.";
         }
     }
 }

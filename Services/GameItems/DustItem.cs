@@ -1,4 +1,5 @@
 ﻿using Discord.Commands;
+using GeneralPurposeBot.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,19 +21,19 @@ namespace GeneralPurposeBot.Services.GameItems
 
         public override string PluralName => "Pieces of Dust";
 
-        public override async Task UseAsync(ICommandContext context, GameMoneyService gameMoneyService, GameItemService gameItemService)
+        public override Task UseAsync(GameTransaction transaction)
         {
             var random = new Random().Next(1, 10);
             if (random <= 2)
             {
-                await context.Channel.SendMessageAsync("Someone on the street said this dust was pretty valuable, paying you $20 for it.").ConfigureAwait(false);
-                var money = gameMoneyService.GetMoney(context.Guild.Id, context.User.Id);
-                await gameMoneyService.SetMoneyAsync(context.Guild.Id, context.User.Id, money + 20).ConfigureAwait(false);
+                transaction.Message = "Someone on the street said this dust was pretty valuable, paying you $20 for it.";
+                transaction.GiveMoney(20);
             }
             else {
-                await context.Channel.SendMessageAsync("*poof* (-1 dust)").ConfigureAwait(false);
+                transaction.Message = "*poof*";
             }
-            gameItemService.TakeItem(context.Guild.Id, context.User.Id, Name);
+            transaction.TakeItems(Name);
+            return Task.CompletedTask;
         }
     }
 }

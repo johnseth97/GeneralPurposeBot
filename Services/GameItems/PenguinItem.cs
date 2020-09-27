@@ -3,6 +3,7 @@ using Discord.Commands;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GeneralPurposeBot.Models;
 
 namespace GeneralPurposeBot.Services.GameItems
 {
@@ -18,24 +19,25 @@ namespace GeneralPurposeBot.Services.GameItems
 
         public override string SingularName => "Penguin";
 
-        public override async Task UseAsync(ICommandContext context, GameMoneyService gameMoneyService, GameItemService gameItemService)
+        public override Task UseAsync(GameTransaction transaction)
         {
-            gameItemService.TakeItem(context.Guild.Id, context.User.Id, Name);
+            transaction.TakeItems(Name);
             var random = new Random().Next(1, 10);
             if (random < 3)
             {
-                await context.Channel.SendMessageAsync("Your pet penguin caught a plane back to Antartica (-1 penguin)").ConfigureAwait(false);
+                transaction.Message = "Your pet penguin caught a plane back to Antartica";
             }
             else if (random < 4)
             {
-                gameMoneyService.RemoveMoney(context.Guild.Id, context.User.Id, 10000);
-                await context.Channel.SendMessageAsync("You were fined $10000 for having an illegal pet").ConfigureAwait(false);
+                transaction.TakeMoney(10000);
+                transaction.Message = "You were fined $10000 for having an illegal pet";
             }
             else
             {
-                gameMoneyService.AddMoney(context.Guild.Id, context.User.Id, 5000000);
-                await context.Channel.SendMessageAsync("You sold your pet penguin for $5000000. Hopefully they won't be made into a soup :(").ConfigureAwait(false);
+                transaction.GiveMoney(5000000);
+                transaction.Message = "You sold your pet penguin for $5000000. Hopefully they won't be made into a soup :(";
             }
+            return Task.CompletedTask;
         }
     }
 }

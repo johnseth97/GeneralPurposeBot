@@ -13,11 +13,11 @@ namespace GeneralPurposeBot.Models
         public GameItemService ItemService { get; }
         public GameMoneyService MoneyService { get; }
         public IGuild Guild { get; set; }
-        private Dictionary<IGuildUser, GameTransactionChanges> Users { get; } = new Dictionary<IGuildUser, GameTransactionChanges>();
+        private Dictionary<IUser, GameTransactionChanges> Users { get; } = new Dictionary<IUser, GameTransactionChanges>();
 
         public string Message { get; set; }
         protected Dictionary<string, ItemBase> AllItems => ItemService.Items;
-        public GameTransaction(GameItemService itemService, GameMoneyService moneyService, IGuild guild, IGuildUser defaultUser)
+        public GameTransaction(GameItemService itemService, GameMoneyService moneyService, IGuild guild, IUser defaultUser)
         {
             ItemService = itemService;
             MoneyService = moneyService;
@@ -44,9 +44,14 @@ namespace GeneralPurposeBot.Models
         /// In most cases you shouldn't need to call this manually.
         /// </summary>
         /// <param name="user">User to add to the transaction</param>
-        public void AddUser(IGuildUser user)
+        public void AddUser(IUser user)
         {
             Users.Add(user, new GameTransactionChanges());
+            if (!MoneyService.UserHasWallet(Guild.Id, user.Id))
+            {
+                Users[user].WalletCreated = true;
+                MoneyService.SetDefaultIfNeeded(Guild.Id, user.Id);
+            }
         }
 
         /// <summary>
@@ -54,9 +59,9 @@ namespace GeneralPurposeBot.Models
         /// </summary>
         /// <param name="amount">Amount of money to give</param>
         /// <param name="user">User to give money to</param>
-        public void AddMoney(decimal amount, IGuildUser user = null)
+        public void GiveMoney(decimal amount, IUser user = null)
         {
-            if (user == null) user = Users[0];
+            if (user == null) user = Users.Keys.First();
             if (!Users.ContainsKey(user)) AddUser(user);
             Users[user].Money += amount;
         }
@@ -66,9 +71,9 @@ namespace GeneralPurposeBot.Models
         /// </summary>
         /// <param name="amount">Amount of money to remove</param>
         /// <param name="user">User to remove money from</param>
-        public void TakeMoney(decimal amount, IGuildUser user = null)
+        public void TakeMoney(decimal amount, IUser user = null)
         {
-            AddMoney(-amount, user);
+            GiveMoney(-amount, user);
         }
 
         /// <summary>
@@ -76,9 +81,9 @@ namespace GeneralPurposeBot.Models
         /// </summary>
         /// <param name="user">User to get money of</param>
         /// <returns>Amount of money user has</returns>
-        public decimal GetMoney(IGuildUser user = null)
+        public decimal GetMoney(IUser user = null)
         {
-            if (user == null) user = Users[0];
+            if (user == null) user = Users.Keys.First();
             if (!Users.ContainsKey(user)) AddUser(user);
             return MoneyService.GetMoney(Guild.Id, user.Id) + Users[user].Money;
         }
@@ -89,9 +94,9 @@ namespace GeneralPurposeBot.Models
         /// <param name="itemName">Name of item to give</param>
         /// <param name="quantity">Quantity to give</param>
         /// <param name="user">User to give item to</param>
-        public void GiveItems(string itemName, int quantity = 1, IGuildUser user = null)
+        public void GiveItems(string itemName, int quantity = 1, IUser user = null)
         {
-            if (user == null) user = Users[0];
+            if (user == null) user = Users.Keys.First();
             if (!Users.ContainsKey(user)) AddUser(user);
             if (!Users[user].Items.ContainsKey(itemName))
                 Users[user].Items.Add(itemName, quantity);
@@ -116,9 +121,9 @@ namespace GeneralPurposeBot.Models
         /// <param name="itemName">Name of item to get quantity of</param>
         /// <param name="user">User to check item quantity for</param>
         /// <returns>Number of the item the user has</returns>
-        public int GetItemQuantity(string itemName, IGuildUser user = null)
+        public int GetItemQuantity(string itemName, IUser user = null)
         {
-            if (user == null) user = Users[0];
+            if (user == null) user = Users.Keys.First();
             if (!Users.ContainsKey(user)) AddUser(user);
             var baseQuantity = ItemService.GetItemQuantity(Guild.Id, user.Id, itemName);
             if (!Users[user].Items.ContainsKey(itemName)) return baseQuantity;
@@ -133,7 +138,38 @@ namespace GeneralPurposeBot.Models
         /// <returns>If the user has any of the item</returns>
         public bool HasItem(string itemName, IGuildUser user = null)
         {
-            return GetItemQuantity(itemName, user) > 0;
+            return HasItem(itemName, 0, user);
+        }
+
+        /// <summary>
+        /// Checks if a user has a certain amount of an item.
+        /// </summary>
+        /// <param name="itemName">Item to check</param>
+        /// <param name="quantity">Quantity to check for</param>
+        /// <param name="user">User to check</param>
+        /// <returns>If the user has any of the item</returns>
+        public bool HasItem(string itemName, int quantity, IGuildUser user = null)
+        {
+            return GetItemQuantity(itemName, user) > quantity;
+        }
+
+        /// <summary>
+        /// Get items/their quantities for a user
+        /// </summary>
+        /// <param name="user">User to get inv for</param>
+        /// <returns>User inv data</returns>
+        public Dictionary<string, int> GetUserItems(IUser user = null)
+        {
+            if (user == null) user = Users.Keys.First();
+            if (!Users.ContainsKey(user)) AddUser(user);
+            var items = ItemService.GetItems(Guild.Id, user.Id);
+            foreach (var itemChange in Users[user].Items)
+            {
+                if (!items.ContainsKey(itemChange.Key))
+                    items[itemChange.Key] = 0;
+                items[itemChange.Key] += itemChange.Value;
+            }
+            return items;
         }
 
         public string FinalizeTransaction()
@@ -154,7 +190,7 @@ namespace GeneralPurposeBot.Models
             changedUsers = Users.Where(u => u.Value.Money != 0 || u.Value.Items.Any(i => i.Value != 0));
             if (!changedUsers.Any())
                 return message;
-            message += "(";
+            message += " (";
             if (changedUsers.Count() > 1)
             {
                 var changeStrings = new List<string>();
@@ -165,15 +201,13 @@ namespace GeneralPurposeBot.Models
                     if (user.Value.Money > 0)
                     {
                         userChangeStrings.Add($"+${user.Value.Money.FormatMoney()}");
-                        MoneyService.AddMoney(Guild.Id, user.Key.Id, user.Value.Money)
                     }
 
                     if (user.Value.Money < 0)
                     {
-                        userChangeStrings.Add($"-${user.Value.Money.FormatMoney()}");
-                        MoneyService.AddMoney(Guild.Id, user.Key.Id, user.Value.Money)
+                        userChangeStrings.Add($"-${(-user.Value.Money).FormatMoney()}");
                     }
-
+                    MoneyService.AddMoney(Guild.Id, user.Key.Id, user.Value.Money);
                     foreach (var item in user.Value.Items.Where(item => item.Value != 0))
                     {
                         if (item.Value > 0)
@@ -184,7 +218,7 @@ namespace GeneralPurposeBot.Models
 
                         if (item.Value < 0)
                         {
-                            userChangeStrings.Add($"-{item.Value} {AllItems[item.Key].GetName(item.Value)}");
+                            userChangeStrings.Add($"{item.Value} {AllItems[item.Key].GetName(item.Value)}");
                             ItemService.TakeItem(Guild.Id, user.Key.Id, item.Key, -item.Value);
                         }
                     }
@@ -200,14 +234,12 @@ namespace GeneralPurposeBot.Models
                 if (user.Value.Money > 0)
                 {
                     userChangeStrings.Add($"+${user.Value.Money.FormatMoney()}");
-                    MoneyService.AddMoney(Guild.Id, user.Key.Id, user.Value.Money)
-                    }
-
+                }
                 if (user.Value.Money < 0)
                 {
-                    userChangeStrings.Add($"-${user.Value.Money.FormatMoney()}");
-                    MoneyService.AddMoney(Guild.Id, user.Key.Id, user.Value.Money)
-                    }
+                    userChangeStrings.Add($"-${(-user.Value.Money).FormatMoney()}");
+                }
+                MoneyService.AddMoney(Guild.Id, user.Key.Id, user.Value.Money);
 
                 foreach (var item in user.Value.Items.Where(item => item.Value != 0))
                 {
@@ -219,13 +251,25 @@ namespace GeneralPurposeBot.Models
 
                     if (item.Value < 0)
                     {
-                        userChangeStrings.Add($"-{item.Value} {AllItems[item.Key].GetName(item.Value)}");
+                        userChangeStrings.Add($"{item.Value} {AllItems[item.Key].GetName(item.Value)}");
                         ItemService.TakeItem(Guild.Id, user.Key.Id, item.Key, -item.Value);
                     }
                 }
                 message += string.Join(", ", userChangeStrings);
             }
             message += ")";
+
+            foreach (var user in Users)
+            {
+                var userMoney = GetMoney(user.Key);
+                if (GetMoney(user.Key) <= 0 && !GetUserItems(user.Key).Any(i => i.Value > 0))
+                {
+                    message += "\n";
+                    message += $"{user.Key.Mention}: You had no items, and you ran out of money, so we're resetting your wallet. Try not to have it happen too much, okay?";
+                    GiveMoney((0 - userMoney) + 100, user.Key);
+                }
+            }
+            return message;
         }
     }
 }

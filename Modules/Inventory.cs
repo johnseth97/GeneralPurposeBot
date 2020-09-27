@@ -17,50 +17,51 @@ namespace GeneralPurposeBot.Modules
 
         [Command, Summary("See what items you have")]
         [Alias("list", "see")]
-        public async Task List()
+        public Task List()
         {
             var output = "__**Your Items**__\n";
-            foreach (var i in UserItems)
+            foreach (var i in Transaction.GetUserItems())
             {
                 output += $"**{i.Key}** ({i.Value}) - {AllItems[i.Key].Description}\n";
             }
-            await ReplyAsync(output).ConfigureAwait(false);
+            Transaction.Message = output;
+            return Task.CompletedTask;
         }
 
         [Command("use"), Summary("Use an item")]
         public async Task Use(string itemName)
         {
-            var item = FindItem(itemName);
+            var item = Transaction.FindItem(itemName);
             if (item == null)
             {
                 await ReplyAsync("This item does not exist!").ConfigureAwait(false);
                 return;
             }
-            if (!HasItem(item.Name))
+            if (!Transaction.HasItem(item.Name))
             {
                 await ReplyAsync("You do not have this item!").ConfigureAwait(false);
                 return;
             }
-            await item.UseAsync(Context, GameMoneyService, GameItemService).ConfigureAwait(false);
+            await item.UseAsync(Transaction).ConfigureAwait(false);
         }
 
         [Command("give"), Summary("Give an item to somebody else")]
         public async Task Give(IGuildUser user, string itemName, int quantity = 1)
         {
-            var item = FindItem(itemName);
+            var item = Transaction.FindItem(itemName);
             if (item == null)
             {
                 await ReplyAsync("This item does not exist!").ConfigureAwait(false);
                 return;
             }
-            if (!HasItem(item.Name, quantity))
+            if (!Transaction.HasItem(item.Name, quantity))
             {
                 await ReplyAsync("You do not have enough of this item!").ConfigureAwait(false);
                 return;
             }
-            TakeItem(item.Name, quantity);
-            GameItemService.GiveItem(Context.Guild.Id, user.Id, item.Name, quantity);
-            await ReplyAsync($"You have given {user.Mention} **{quantity} {item.GetName(quantity)}**!").ConfigureAwait(false);
+            Transaction.TakeItems(item.Name, quantity);
+            Transaction.GiveItems(item.Name, quantity, user);
+            Transaction.Message = $"You have given {user.Mention} **{quantity} {item.GetName(quantity)}**!";
         }
     }
 }

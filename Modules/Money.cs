@@ -28,23 +28,6 @@ namespace GeneralPurposeBot.Modules
             await ReplyAsync($"{user.Mention} has **${GameMoneyService.GetMoney(Context.Guild.Id, user.Id).FormatMoney()}**").ConfigureAwait(false);
         }
 
-        [Command("reset"), Summary("Reset your money, if you have none (and no items)")]
-        public async Task Reset()
-        {
-            if (Money > 0)
-            {
-                await ReplyAsync("Hey, wait a minute, you still have some money!").ConfigureAwait(false);
-                return;
-            }
-            if (UserItems.Any(i => i.Value > 0))
-            {
-                await ReplyAsync("You still have some items - sell them or use them to get some money.").ConfigureAwait(false);
-                return;
-            }
-            Money = 100;
-            await ReplyAsync($"Your money has been reset. You now have **${Money}**").ConfigureAwait(false);
-        }
-
         [Command("give"), Summary("Give other people money")]
         [Alias("pay")]
         public async Task Give(IGuildUser user, decimal amount)
@@ -54,15 +37,14 @@ namespace GeneralPurposeBot.Modules
                 await ReplyAsync("You don't have that much money!").ConfigureAwait(false);
                 return;
             }
-            Money -= amount;
-            var newAmount = GameMoneyService.GetMoney(Context.Guild.Id, user.Id) + amount;
-            GameMoneyService.SetMoney(Context.Guild.Id, user.Id, newAmount);
-            await ReplyAsync($"You now have **${MoneyString}** and {user.Mention} now has **${newAmount.FormatMoney()}**").ConfigureAwait(false);
+            Transaction.TakeMoney(amount);
+            Transaction.GiveMoney(amount, user);
+            Transaction.Message = "Done!";
         }
 
         [Command("top"), Summary("Top 10 richest users in the server")]
         [Alias("baltop", "top10")]
-        public async Task Top()
+        public Task Top()
         {
             var moneyList = GameMoneyService.GetAllInServer(Context.Guild.Id);
             var userPos = moneyList.ToList().FindIndex(um => um.UserId == Context.User.Id);
@@ -84,7 +66,8 @@ namespace GeneralPurposeBot.Modules
                 output += $"**{(Context.User as IGuildUser).GetDisplayName()}**";
                 output += $" - ${Money}";
             }
-            await ReplyAsync(output).ConfigureAwait(false);
+            Transaction.Message = output;
+            return Task.CompletedTask;
         }
     }
 }

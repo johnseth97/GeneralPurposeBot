@@ -9,6 +9,6 @@ namespace GeneralPurposeBot.Models
     {
         public decimal Money { get; set; } = 0;
         public Dictionary<string, int> Items { get; set; } = new Dictionary<string, int>();
-        public bool WalletCreated = true;
+        public bool WalletCreated = false;
     }
 }

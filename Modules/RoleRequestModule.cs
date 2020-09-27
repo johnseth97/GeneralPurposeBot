@@ -8,7 +8,7 @@ using GeneralPurposeBot.Services;
 using GeneralPurposeBot.Models;
 namespace DiscordBot.Modules
 {
-    [Group("Role"), Summary("!role set <roleName> to set your role, !role remove to remove your role")]
+    [Group("Role"), Summary("Manages self-assignable roles")]
     [RequireBotPermission(Discord.GuildPermission.ManageRoles, ErrorMessage = "The bot must be able to manage roles on the server to set user roles.", NotAGuildErrorMessage = "This must be run inside of a server.")]
     public class RoleRequestModule : ModuleBase
     {
@@ -24,7 +24,7 @@ namespace DiscordBot.Modules
             return possibleRoles.FirstOrDefault();
         }
 
-        [Command("add"), Summary("!role add <roleName> to add the role to the list of self-assignable roles. Role must not have moderation-related permissions to work.")]
+        [Command("add"), Summary("Add a role to the list of self-assignable roles. Role must not have moderation-related permissions to work.")]
         [RequireUserPermission(GuildPermission.ManageRoles, ErrorMessage = "You must be able to manage roles to set a role as self-assignable.")]
         public async Task Add([Remainder] string role)
         {
