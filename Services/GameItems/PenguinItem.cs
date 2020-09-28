@@ -13,7 +13,7 @@ namespace GeneralPurposeBot.Services.GameItems
 
         public override string Description => "A stinky Penguin";
 
-        public override bool StoreBuyable => true;
+        public override bool StoreBuyable => false;
 
         public override decimal StoreBuyPrice => 50;
 
@@ -22,7 +22,7 @@ namespace GeneralPurposeBot.Services.GameItems
         public override Task UseAsync(GameTransaction transaction)
         {
             transaction.TakeItems(Name);
-            var random = new Random().Next(1, 10);
+            var random = Util.Random.Next(1, 10);
             if (random < 3)
             {
                 transaction.Message = "Your pet penguin caught a plane back to Antartica";

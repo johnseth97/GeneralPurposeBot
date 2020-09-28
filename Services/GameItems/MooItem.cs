@@ -13,13 +13,13 @@ namespace GeneralPurposeBot.Services.GameItems
 
         public override string Description => "A very rare moo, hard to find.";
 
-        public override bool StoreBuyable => true;
+        public override bool StoreBuyable => false;
 
         public override decimal StoreBuyPrice => 1000000;
 
         public override Task UseAsync(GameTransaction transaction)
         {
-            var random = new Random().Next(1, 24);
+            var random = Util.Random.Next(1, 24);
             if (random < 10)
             {
                 transaction.Message = "moo";

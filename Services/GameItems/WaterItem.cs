@@ -13,13 +13,13 @@ namespace GeneralPurposeBot.Services.GameItems
 
         public override string Description => "Holy Water, you should feel very blessed now.";
 
-        public override bool StoreBuyable => true;
+        public override bool StoreBuyable => false;
 
         public override decimal StoreBuyPrice => 100000;
 
         public override Task UseAsync(GameTransaction transaction)
         {
-            var random = new Random().Next(1, 11);
+            var random = Util.Random.Next(1, 11);
             transaction.TakeItems(Name);
             if (random < 3)
             {

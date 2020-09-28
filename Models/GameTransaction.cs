@@ -13,7 +13,7 @@ namespace GeneralPurposeBot.Models
         public GameItemService ItemService { get; }
         public GameMoneyService MoneyService { get; }
         public IGuild Guild { get; set; }
-        private Dictionary<IUser, GameTransactionChanges> Users { get; } = new Dictionary<IUser, GameTransactionChanges>();
+        public Dictionary<IUser, GameTransactionChanges> Users { get; } = new Dictionary<IUser, GameTransactionChanges>();
 
         public string Message { get; set; }
         protected Dictionary<string, ItemBase> AllItems => ItemService.Items;
@@ -110,7 +110,7 @@ namespace GeneralPurposeBot.Models
         /// <param name="itemName">Name of item to remove</param>
         /// <param name="quantity">Quantity to remove</param>
         /// <param name="user">User to remove item from</param>
-        public void TakeItems(string itemName, int quantity = 1, IGuildUser user = null)
+        public void TakeItems(string itemName, int quantity = 1, IUser user = null)
         {
             GiveItems(itemName, -quantity, user);
         }

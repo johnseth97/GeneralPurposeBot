@@ -24,7 +24,7 @@ namespace GeneralPurposeBot.Services.GameItems
         public override Task UseAsync(GameTransaction transaction)
         {
             transaction.TakeItems(Name);
-            var random = new Random().Next(1, 100);
+            var random = Util.Random.Next(1, 100);
             if (random <= 50)
             {
                 transaction.Message = "The lamp broke. Oops.";

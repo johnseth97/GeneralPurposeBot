@@ -29,7 +29,7 @@ namespace GeneralPurposeBot.Modules
         }
 
         [Command("use"), Summary("Use an item")]
-        public async Task Use(string itemName)
+        public async Task Use(string itemName, IGuildUser otherUser = null)
         {
             var item = Transaction.FindItem(itemName);
             if (item == null)
@@ -42,6 +42,8 @@ namespace GeneralPurposeBot.Modules
                 await ReplyAsync("You do not have this item!").ConfigureAwait(false);
                 return;
             }
+            if (otherUser != null && Context.User.Id != otherUser.Id)
+                Transaction.AddUser(otherUser);
             await item.UseAsync(Transaction).ConfigureAwait(false);
         }
 

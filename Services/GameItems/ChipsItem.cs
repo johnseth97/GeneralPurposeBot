@@ -22,7 +22,7 @@ namespace GeneralPurposeBot.Services.GameItems
 
         public override Task UseAsync(GameTransaction transaction)
         {
-            var random = new Random().Next(1, 150);
+            var random = Util.Random.Next(1, 150);
             if (random <= 3)
             {
                 transaction.TakeItems(Name);

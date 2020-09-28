@@ -13,12 +13,12 @@ namespace GeneralPurposeBot.Services.GameItems
 
         public override string Description => "One shoe, why is there only one?";
 
-        public override bool StoreBuyable => true;
+        public override bool StoreBuyable => false;
 
         public override decimal StoreBuyPrice => 200;
         public override Task UseAsync(GameTransaction transaction)
         {
-            var random = new Random().Next(1, 20);
+            var random = Util.Random.Next(1, 20);
             if (transaction.GetItemQuantity(Name) > 1)
             {
                 transaction.TakeItems(Name, 2);
@@ -28,7 +28,7 @@ namespace GeneralPurposeBot.Services.GameItems
                 }
                 else
                 {
-                    var amount = new Random().Next(10, 100000);
+                    var amount = Util.Random.Next(10, 100000);
                     transaction.GiveMoney(amount);
                     transaction.Message = $"You sold your designer pair of shoes for ${amount}";
                 }
@@ -37,7 +37,7 @@ namespace GeneralPurposeBot.Services.GameItems
             {
                 if (random > 15)
                 {
-                    var amount = new Random().Next(1, 500);
+                    var amount = Util.Random.Next(1, 500);
                     transaction.GiveMoney(amount);
                     transaction.Message = $"You found ${amount} in your shoe!";
                 }

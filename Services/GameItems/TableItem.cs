@@ -20,7 +20,7 @@ namespace GeneralPurposeBot.Services.GameItems
         public override Task UseAsync(GameTransaction transaction)
         {
             const string flip = "(╯°□°）╯︵ ┻━┻";
-            var rand = new Random();
+            var rand = Util.Random;
             var random = rand.Next(1, 100);
             if (random <= 20)
             {
@@ -39,7 +39,7 @@ namespace GeneralPurposeBot.Services.GameItems
             }
             else if (random <= 65)
             {
-                var amount = new Random().Next(1, 5000);
+                var amount = Util.Random.Next(1, 5000);
                 transaction.GiveMoney(amount);
                 transaction.Message = $"You look under the table and find ${amount}";
             }

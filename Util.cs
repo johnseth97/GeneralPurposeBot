@@ -13,6 +13,8 @@ namespace GeneralPurposeBot
 {
     public static class Util
     {
+        public static Random Random = new Random();
+
         public static string GetFullName(this ModuleInfo module)
         {
             var name = "";
