@@ -30,7 +30,6 @@ namespace GeneralPurposeBot.Modules
 
         public void PreExec()
         {
-            Console.WriteLine("Created new tx");
             Transaction = new GameTransaction(GameItemService, GameMoneyService, Context.Guild, Context.User);
         }
 

@@ -53,7 +53,7 @@ namespace GeneralPurposeBot
         }
 
         public static string FormatMoney(this decimal amount)
-            => string.Format("{0:0.00}", amount);
+            => string.Format("{0:n}", amount);
 
         public static string GetDisplayName(this IGuildUser user)
         {
