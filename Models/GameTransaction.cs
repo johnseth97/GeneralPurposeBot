@@ -262,11 +262,11 @@ namespace GeneralPurposeBot.Models
             foreach (var user in Users)
             {
                 var userMoney = GetMoney(user.Key);
-                if (GetMoney(user.Key) <= 0 && !GetUserItems(user.Key).Any(i => i.Value > 0))
+                if (MoneyService.GetMoney(Guild.Id, user.Key.Id) == 0 && !ItemService.GetItems(Guild.Id, user.Key.Id).Any(i => i.Value > 0))
                 {
                     message += "\n";
                     message += $"{user.Key.Mention}: You had no items, and you ran out of money, so we're resetting your wallet. Try not to have it happen too much, okay?";
-                    GiveMoney((0 - userMoney) + 100, user.Key);
+                    MoneyService.SetMoney(Guild.Id, user.Key.Id, 100);
                 }
             }
             return message;
