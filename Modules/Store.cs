@@ -20,6 +20,7 @@ namespace GeneralPurposeBot.Modules
             var output = "__**Items in the Store:**__\n";
             GameItemService.Items
                 .Where(item => item.Value.InStore)
+                .OrderBy(item => item.Value.StoreBuyPrice)
                 .ToList()
                 .ForEach(item => output += item.Value.GetStoreItemString() + "\n");
             await ReplyAsync(output).ConfigureAwait(false);

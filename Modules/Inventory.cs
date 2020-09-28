@@ -20,7 +20,7 @@ namespace GeneralPurposeBot.Modules
         public Task List()
         {
             var output = "__**Your Items**__\n";
-            foreach (var i in Transaction.GetUserItems())
+            foreach (var i in Transaction.GetUserItems().OrderBy(i => i.Value))
             {
                 output += $"**{i.Key}** ({i.Value}) - {AllItems[i.Key].Description}\n";
             }
