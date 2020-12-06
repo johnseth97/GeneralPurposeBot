@@ -12,8 +12,19 @@ namespace GeneralPurposeBot.Services
             : base(options)
         {
         }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            // query with `.Find(serverId, userId)`
+            builder.Entity<UserMoney>()
+                .HasKey(um => new { um.ServerId, um.UserId });
+            builder.Entity<UserItem>()
+                .HasKey(um => new { um.ServerId, um.UserId, um.ItemName });
+        }
+
         public DbSet<ServerProperties> ServerProperties { get; set; }
         public DbSet<ServerModule> ServerModules { get; set; }
         public DbSet<AssignableRole> AssignableRoles { get; set; }
+        public DbSet<UserMoney> UserMoney { get; set; }
+        public DbSet<UserItem> UserItems { get; set; }
     }
 }

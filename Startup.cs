@@ -43,6 +43,8 @@ namespace GeneralPurposeBot
             services.AddSingleton<ServerPropertiesService>();
             services.AddSingleton<TempVcService>();
             services.AddSingleton<RoleRequestService>();
+            services.AddSingleton<GameMoneyService>();
+            services.AddSingleton<GameItemService>();
 
             string connStr = null;
             var connStrs = Configuration.GetSection("ConnectionStrings");
@@ -87,10 +89,7 @@ namespace GeneralPurposeBot
                 options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("192.168.0.0"), 16));
                 options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("127.0.0.0"), 8));
             });
-            services.AddSpaStaticFiles(config =>
-            {
-                config.RootPath = "desobot-web/dist";
-            });
+            services.AddSpaStaticFiles(config => config.RootPath = "desobot-web/dist");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -124,10 +123,7 @@ namespace GeneralPurposeBot
                 }
                 endpoints.MapControllers();
             });
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "desobot-web";
-            });
+            app.UseSpa(spa => spa.Options.SourcePath = "desobot-web");
         }
     }
 }

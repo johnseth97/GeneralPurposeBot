@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,8 @@ namespace GeneralPurposeBot
 {
     public static class Util
     {
+        public static Random Random = new Random();
+
         public static string GetFullName(this ModuleInfo module)
         {
             var name = "";
@@ -32,7 +35,7 @@ namespace GeneralPurposeBot
 
             var schemes = context.RequestServices.GetRequiredService<IAuthenticationSchemeProvider>();
 
-            return (from scheme in await schemes.GetAllSchemesAsync()
+            return (from scheme in await schemes.GetAllSchemesAsync().ConfigureAwait(false)
                     where !string.IsNullOrEmpty(scheme.DisplayName)
                     select scheme).ToArray();
         }
@@ -44,9 +47,29 @@ namespace GeneralPurposeBot
                 throw new ArgumentNullException(nameof(context));
             }
 
-            return (from scheme in await context.GetExternalProvidersAsync()
+            return (from scheme in await context.GetExternalProvidersAsync().ConfigureAwait(false)
                     where string.Equals(scheme.Name, provider, StringComparison.OrdinalIgnoreCase)
                     select scheme).Any();
+        }
+
+        public static string FormatMoney(this decimal amount)
+            => string.Format("{0:n}", amount);
+
+        public static string GetDisplayName(this IGuildUser user)
+        {
+            return user.Nickname ?? user.Username;
+        }
+
+        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            HashSet<TKey> seenKeys = new HashSet<TKey>();
+            foreach (TSource element in source)
+            {
+                if (seenKeys.Add(keySelector(element)))
+                {
+                    yield return element;
+                }
+            }
         }
     }
 }

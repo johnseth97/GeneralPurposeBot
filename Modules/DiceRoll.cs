@@ -16,6 +16,5 @@ namespace GeneralPurposeBot.Modules
             var number = random.Next(1, 7);
             await Context.Channel.SendMessageAsync("Your 6 sided 🎲 rolled a " + number + "!").ConfigureAwait(false);
         }
-
     }
 }

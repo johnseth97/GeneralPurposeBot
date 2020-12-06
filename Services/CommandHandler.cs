@@ -10,6 +10,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections.Immutable;
 using GeneralPurposeBot.Web.Models;
+using GeneralPurposeBot.Modules;
+using Discord.Commands.Builders;
+using HarmonyLib;
+using Microsoft.Extensions.Logging;
 
 namespace GeneralPurposeBot.Services
 {
@@ -22,7 +26,13 @@ namespace GeneralPurposeBot.Services
         private readonly IServiceProvider _services;
         private readonly ServerPropertiesService _spService;
 
-        public CommandHandler(IServiceProvider services, IConfiguration config, CommandService commandService, DiscordShardedClient client, ServerPropertiesService spService)
+        public CommandHandler(
+            IServiceProvider services,
+            IConfiguration config,
+            CommandService commandService,
+            DiscordShardedClient client,
+            ServerPropertiesService spService,
+            ILogger<CommandHandler> logger)
         {
             // didn't grab these from the service provider because it's usually considered better convention to have them defined in the constructor
             _config = config;
@@ -30,6 +40,7 @@ namespace GeneralPurposeBot.Services
             _client = client;
             _spService = spService;
             _services = services;
+            Logger = logger;
 
             // take action when we execute a command
             Commands.CommandExecuted += CommandExecutedAsync;
@@ -38,10 +49,77 @@ namespace GeneralPurposeBot.Services
             _client.MessageReceived += MessageReceivedAsync;
         }
 
-        public async Task InitializeAsync()
+        public ILogger<CommandHandler> Logger { get; }
+
+        public void Initialize()
         {
-            // register modules that are public and inherit ModuleBase<T>.
-            await Commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services).ConfigureAwait(false);
+            static bool IsLoadable(Type type)
+            {
+                return type.GetMethods().Any(x => x.GetCustomAttribute<CommandAttribute>() != null) &&
+                    type.GetCustomAttribute<DontAutoLoadAttribute>() == null;
+            }
+            static bool IsModule(Type type)
+            {
+                // specific generic parameter for ModuleBase doesn't matter - it checks against ModuleBase<>
+                return type.IsSubclassOf(typeof(ModuleBase<ICommandContext>));
+            }
+            static bool ShouldPatch(Type type)
+            {
+                return type.GetMethod("PreExec") != null || type.GetMethod("PostExec") != null;
+            }
+
+            AppDomain.CurrentDomain.GetAssemblies()
+                .ToList()
+                .ForEach(async assembly => await Commands.AddModulesAsync(assembly, _services).ConfigureAwait(false));
+
+            // pre/post-exec hook patching
+            // this is cursed as hell please don't do this again
+            var harmony = new Harmony("me.nofla.desobot.patches");
+
+            // discover all types that we may have to do this on
+            AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(a => a.GetTypes())
+                .Where(t => IsModule(t) && IsLoadable(t) && ShouldPatch(t))
+                .ToList()
+                .ForEach(type =>
+                {
+                    type.GetMethods()
+                        .Where(m => m.GetCustomAttribute<CommandAttribute>() != null)
+                        .DistinctBy(u => u.Name)
+                        .ToList()
+                        .ForEach(method =>
+                        {
+                            if (type.GetMethod("PreExec") != null)
+                            {
+                                Logger.LogDebug("Adding pre-exec for {type}#{method}", type.FullName, method.Name);
+                                harmony.Patch(method, prefix: new HarmonyMethod(typeof(CommandHandler), "CommandPrefix"));
+                            }
+
+                            if (type.GetMethod("PostExec") != null)
+                            {
+                                Logger.LogDebug("Adding post-exec for {type}#{method}", type.FullName, method.Name);
+                                harmony.Patch(method, postfix: new HarmonyMethod(typeof(CommandHandler), "CommandPostfix"));
+                            }
+                        });
+                });
+        }
+
+        public static void CommandPrefix(object __instance)
+        {
+            __instance.GetType().GetMethod("PreExec").Invoke(__instance, null);
+        }
+
+        public static void CommandPostfix(object __instance, ref Task __result)
+        {
+            __result = __result.ContinueWith((_) =>
+            {
+                var postExec = __instance.GetType().GetMethod("PostExec");
+                var postExecResult = postExec.Invoke(__instance, null);
+                if (typeof(Task).IsAssignableFrom(postExec.ReturnType))
+                {
+                    ((Task)postExecResult).Wait();
+                }
+            });
         }
 
         // this class is where the magic starts, and takes actions upon receiving messages
@@ -142,7 +220,7 @@ namespace GeneralPurposeBot.Services
             }
 
             // Calculates the 'score' of a command given a parse result
-            float CalculateScore(CommandMatch match, ParseResult parseResult)
+            static float CalculateScore(CommandMatch match, ParseResult parseResult)
             {
                 float argValuesScore = 0, paramValuesScore = 0;
 
@@ -156,7 +234,7 @@ namespace GeneralPurposeBot.Services
                 }
 
                 var totalArgsScore = (argValuesScore + paramValuesScore) / 2;
-                return match.Command.Priority + totalArgsScore * 0.99f;
+                return match.Command.Priority + (totalArgsScore * 0.99f);
             }
 
             //Order the parse results by their score so that we choose the most likely result to execute

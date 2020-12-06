@@ -3,14 +3,16 @@ using System;
 using GeneralPurposeBot.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GeneralPurposeBot.Migrations
 {
     [DbContext(typeof(BotDbContext))]
-    partial class BotDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200910035459_Money")]
+    partial class Money
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,28 +86,6 @@ namespace GeneralPurposeBot.Migrations
                     b.HasKey("ServerId");
 
                     b.ToTable("ServerProperties");
-                });
-
-            modelBuilder.Entity("GeneralPurposeBot.Models.UserItem", b =>
-                {
-                    b.Property<ulong>("ServerId")
-                        .HasColumnType("bigint unsigned");
-
-                    b.Property<ulong>("UserId")
-                        .HasColumnType("bigint unsigned");
-
-                    b.Property<string>("ItemName")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("ServerId", "UserId", "ItemName");
-
-                    b.ToTable("UserItems");
                 });
 
             modelBuilder.Entity("GeneralPurposeBot.Models.UserMoney", b =>
